@@ -23,7 +23,7 @@ function assignCapabilities(){
       <form id="filesByClientForm">
         <div id="clientsList">
           <select name="user" required>
-              <option value="" disabled selected>Seleccione un cliente</option>
+              <option value="" disabled selected>Seleccionar</option>
             <?php foreach ($users as $key => $user) { ?>
               <option value="<?php echo $user->ID?>"><?php echo $user->display_name ?></option>
             <?php } ?>
@@ -31,8 +31,10 @@ function assignCapabilities(){
         </div>
         <div>
           <button type="submit" name="button">Seleccionar</button>
+          <label for="select-all">Seleccionar todos los permisos </label>
+            <input type="checkbox" name="select-all" value=""/>
         </div>
-    </form>
+      </form>
   </div>
 
   <div class="uc-horizontal-separator"></div>

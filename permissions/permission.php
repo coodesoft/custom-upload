@@ -88,6 +88,27 @@ function add_permissions($permissions){
   return 0;
 }
 
+function add_all_permisions(){
+  global $wpdb;
+  $request = $_POST['Permissions'];
+
+  if (!empty($request[select-all])){
+    $query = $wpdb->prepare("SELECT * FROM wd_cu_acces WHERE user_id=%d", $request['user']);
+    $stored = $wpdb->get_results($query, ARRAY_A);
+
+    $permissionsArr = prepare_data($req);
+    $comparison = compare_data($stored, $permissionsArr);
+
+    $deleted = delete_permissions($comparison['toDelete']);
+    $added = add_permissions($comparison['toAdd']);
+
+    $result =  ($deleted || $added);
+    $url ='admin.php?page=global_custom_upload&tab=assignCapabilities&assign_status='.$result;
+    wp_redirect($url);
+    exit;
+  }
+}
+
 function cu_assign_permission(){
   global $wpdb;
   $req = $_POST['Permissions'];
