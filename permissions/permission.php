@@ -15,8 +15,12 @@ function cu_load_files_permision_by_user(){
     wp_die();
     }
 
-    $queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
-    $queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
+    //$queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
+    //$queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
+
+    $prefix = $wpdb->prefix;
+    $queryStr = "SELECT ".$prefix."cu_files.*, ".$prefix."cu_access.access_id, ".$prefix."cu_access.user_id FROM ".$prefix."cu_files ";
+    $queryStr.= "LEFT JOIN ".$prefix."cu_access ON ".$prefix."cu_files.file_id=".$prefix."cu_access.file_id AND ".$prefix."cu_access.user_id=".$user;
 
     $access = $wpdb->get_results($queryStr, OBJECT);
    ?>
@@ -90,10 +94,11 @@ function add_permissions($permissions){
 
 function add_all_permisions(){
   global $wpdb;
+  $prefix = $wpdb->prefix;
   $request = $_POST['Permissions'];
 
   if (!empty($request[select-all])){
-    $query = $wpdb->prepare("SELECT * FROM wd_cu_acces WHERE user_id=%d", $request['user']);
+    $query = $wpdb->prepare("SELECT * FROM ".$prefix."cu_access WHERE user_id=%d", $request['user']);
     $stored = $wpdb->get_results($query, ARRAY_A);
 
     $permissionsArr = prepare_data($req);
@@ -111,10 +116,11 @@ function add_all_permisions(){
 
 function cu_assign_permission(){
   global $wpdb;
+  $prefix = $wpdb->prefix;
   $req = $_POST['Permissions'];
 
   global $wpdb;
-  $query = $wpdb->prepare("SELECT * FROM wd_cu_access WHERE user_id=%d", $req['user']);
+  $query = $wpdb->prepare("SELECT * FROM ".$prefix."cu_access WHERE user_id=%d", $req['user']);
   $stored = $wpdb->get_results($query, ARRAY_A);
 
   $permissionsArr = prepare_data($req);

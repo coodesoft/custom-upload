@@ -1,14 +1,20 @@
 <?php
 
 class History{
+  
+  const TABLE = 'cu_history';
+  
 
-  const TABLE = 'wd_cu_history';
+  public function __construct(){
+    global $wpdb;
+    $prefix = $wpdb->prefix;
+    $table_name = $prefix.TABLE;
+  }
 
   static function getAllByUser($id){
     global $wpdb;
-
-    $queryStr = "SELECT wd_cu_history.*, wd_cu_files.file_dir FROM " .History::TABLE;
-    $queryStr.= " LEFT JOIN wd_cu_files ON wd_cu_files.file_id=".History::TABLE.".file_id WHERE ".History::TABLE.".user_id=%d";
+    $queryStr = "SELECT ".$prefix."cu_history.*, ".$prefix."cu_files.file_dir FROM " .History::TABLE;
+    $queryStr.= " LEFT JOIN ".$prefix."cu_files ON ".$prefix."cu_files.file_id=".History::TABLE.".file_id WHERE ".History::TABLE.".user_id=%d";
 
     $query = $wpdb->prepare($queryStr, array($id));
     return $wpdb->get_results($query, ARRAY_A);

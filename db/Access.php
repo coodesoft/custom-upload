@@ -1,8 +1,14 @@
 <?php
 
 class Access{
+  
+  const TABLE = 'cu_access';
 
-  const TABLE = 'wd_cu_access';
+  public function __construct(){
+    global $wpdb;
+    $prefix = $wpdb->prefix;
+    $table_name = $prefix.TABLE;
+  }
 
   static function deleteByIDs($IDs){
     $values = array();
