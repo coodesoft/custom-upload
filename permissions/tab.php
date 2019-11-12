@@ -19,7 +19,6 @@ function assignCapabilities(){
 
   <div id="clientSelection">
       <div>Seleccione el cliente:</div>
-
       <form id="filesByClientForm">
         <div id="clientsList">
           <select name="user" required>
@@ -30,9 +29,15 @@ function assignCapabilities(){
           </select>
         </div>
         <div>
-          <button type="submit" name="button">Seleccionar</button>
+          <button type="submit" name="button" onclick="enableAssingDefaultBtn()">Seleccionar</button>
+          <script type="text/javascript">
+            function enableAssingDefaultBtn() {
+              document.getElementById('cuAssignDefault').disabled = false;
+            }
+          </script>
         </div>
     </form>
+    <button type="button" id="cuAssignDefault" disabled>Asignar lista default de archivos</button>
   </div>
 
   <div class="uc-horizontal-separator"></div>
