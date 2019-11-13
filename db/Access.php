@@ -1,19 +1,14 @@
 <?php
 require_once(__DIR__."/DbAbstract.php");
 
-class Access extends DbAbstract {
+class Access {
   
-  const TABLE = 'cu_access';
-
-  public function __construct(){
-    parent::construct();
-  }
+  const TABLE = 'wd_cu_access';
 
   static function deleteByIDs($IDs){
     $values = array();
-    $table = $this->prefix.Access::TABLE;
-
-    $query = "DELETE FROM " .$table. " WHERE access_id IN ($IDs)";
+    
+    $query = "DELETE FROM " .Access::TABLE. " WHERE access_id IN ($IDs)";
     return $wpdb->query($query);
   }
 
