@@ -1,9 +1,8 @@
 <?php
 class Clients{
-    global $wpdb
-    $prefix = $wpdb->prefix;
-    const TABLE = $prefix.'cu_clientes';
-    const RELATED = $prefix.'cu_sucursales';
+  
+    const TABLE = 'wd_cu_clientes';
+    const RELATED = 'wd_cu_sucursales';
     
   static function getSpecialKeys(){
       return ['direccion_publica', 'sitio_web', 'telefono'];
