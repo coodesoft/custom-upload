@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../db/Access.php');
+require_once(__DIR__ . '/../db/Clients.php');
 
 function cu_load_files_permision_by_user(){
     global $wpdb;
@@ -15,13 +16,13 @@ function cu_load_files_permision_by_user(){
     wp_die();
     }
 
-    //$queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
-    //$queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
-
+    $queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
+    $queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
+    /*
     $prefix = $wpdb->prefix;
     $queryStr = "SELECT ".$prefix."cu_files.*, ".$prefix."cu_access.access_id, ".$prefix."cu_access.user_id FROM ".$prefix."cu_files ";
     $queryStr.= "LEFT JOIN ".$prefix."cu_access ON ".$prefix."cu_files.file_id=".$prefix."cu_access.file_id AND ".$prefix."cu_access.user_id=".$user;
-
+    */
     $access = $wpdb->get_results($queryStr, OBJECT);
    ?>
     <form action="<?= admin_url('admin-post.php') ?>" method="POST">
@@ -93,34 +94,25 @@ function add_permissions($permissions){
 }
 
 function add_all_permisions(){
-  global $wpdb;
-  $prefix = $wpdb->prefix;
-  $request = $_POST['Permissions'];
+  $request = $_POST['select-all'];
 
-  if (!empty($request[select-all])){
-    $query = $wpdb->prepare("SELECT * FROM ".$prefix."cu_access WHERE user_id=%d", $request['user']);
-    $stored = $wpdb->get_results($query, ARRAY_A);
+  if (!empty ($request)){
+    $clients = Clients::getAll();
 
-    $permissionsArr = prepare_data($req);
-    $comparison = compare_data($stored, $permissionsArr);
-
-    $deleted = delete_permissions($comparison['toDelete']);
-    $added = add_permissions($comparison['toAdd']);
-
-    $result =  ($deleted || $added);
-    $url ='admin.php?page=global_custom_upload&tab=assignCapabilities&assign_status='.$result;
-    wp_redirect($url);
-    exit;
+    if (!empty($clients)){
+      $idFile = $_POST['id-file'];
+      return Access::add($idFile);
+    }  
   }
+  return 0;
+  } 
 }
 
 function cu_assign_permission(){
-  global $wpdb;
-  $prefix = $wpdb->prefix;
   $req = $_POST['Permissions'];
 
   global $wpdb;
-  $query = $wpdb->prepare("SELECT * FROM ".$prefix."cu_access WHERE user_id=%d", $req['user']);
+  $query = $wpdb->prepare("SELECT * FROM wp_cu_access WHERE user_id=%d", $req['user']);
   $stored = $wpdb->get_results($query, ARRAY_A);
 
   $permissionsArr = prepare_data($req);
@@ -128,6 +120,8 @@ function cu_assign_permission(){
 
   $deleted = delete_permissions($comparison['toDelete']);
   $added = add_permissions($comparison['toAdd']);
+
+  $addAll = add_all_permisions();
 
   $result =  ($deleted || $added);
   $url ='admin.php?page=global_custom_upload&tab=assignCapabilities&assign_status='.$result;

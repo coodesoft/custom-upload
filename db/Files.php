@@ -2,7 +2,7 @@
 
 class Files{
   
-  const TABLE = 'wd_cu_files';
+  const TABLE = 'wp_cu_files';
   private $prefix;
 
   /*public function __construct(){
