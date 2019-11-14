@@ -20,7 +20,7 @@ function cu_show_files_tree(){
     <?php $files = $dirTree['file'] ?>
     <?php foreach ($files as $key => $fElement) { ?>
       <li class="uc-files"><?php echo $fElement ?>
-        <input type="checkbox" id="cuAssignDefault" value="false"><label style="float:right">Asignar masivamente</label>
+        <input type="checkbox" id="cuAssignDefault" value="false"><?php //<label style="float:right">Asignar masivamente</label> ?>
         <button id="ucEraseFiles" style="background-image:url('../img/basura.svg')"></button>
       </li>
     <?php } ?>
