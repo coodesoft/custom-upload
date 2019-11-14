@@ -17,7 +17,23 @@ class Files{
     return $wpdb->query($query);
   }
 
+  static function delete($path){
+    global $wpdb;
+    $query = "SELECT file_id FROM " . self::TABLE . " WHERE file_dir = '". $path ."'";
+    $file_id = $wpdb->get_var($query);
+    $wpdb->query('START TRANSACTION');
+    $resultUnlink = unlink($file_dir);
+    //$result = $wpdb->delete( self::TABLE, ['file_id' => $id], ['%d'] );
+    $result = true;
 
+    if ($result !== false && $resultUnlink !== false){
+      $wpdb->query('COMMIT');
+      return true;
+    } else{
+      $wpdb->query('ROLLBACK');
+      return false;
+    }
+  }
   static function getTypes(){
     return [
       ['label' => 'JPG',  'id' => 0 ],
