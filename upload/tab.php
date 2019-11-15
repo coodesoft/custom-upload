@@ -45,7 +45,8 @@ function createUploadForn(){
   <div id="actionResult">
     <p><?php echo $result = $_GET['assign_status'] ? 'La carga de archivos se completó exitosamente':'Se produjo un error inesperado durante la carga de archivos'?></p>
   </div>
-<?php }elseif (isset($_GET['delete_status'])){ ?>
+<?php }
+  if (isset($_GET['delete_status'])){ ?>
   <div id="actionResult">
     <p><?php echo $result = $_GET['delete_status'] ? 'El archivo se borró exitosamente':'Se produjo un error inesperado durante el borrado del archivos'?></p>
   </div>

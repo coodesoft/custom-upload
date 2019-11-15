@@ -21,10 +21,10 @@ class Files{
     global $wpdb;
     $query = "SELECT file_id FROM " . self::TABLE . " WHERE file_dir = '". $path ."'";
     $file_id = $wpdb->get_var($query);
+
     $wpdb->query('START TRANSACTION');
-    $resultUnlink = unlink($file_dir);
-    //$result = $wpdb->delete( self::TABLE, ['file_id' => $id], ['%d'] );
-    $result = true;
+    $resultUnlink = unlink($path);
+    $result = $wpdb->delete( self::TABLE, ['file_id' => $file_id], ['%d'] );
 
     if ($result !== false && $resultUnlink !== false){
       $wpdb->query('COMMIT');
