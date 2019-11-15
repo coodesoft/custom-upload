@@ -92,12 +92,15 @@ $nombres_productos = array(
 
       <div class="right-panel">
         <h3>Archivos Subidos</h3>
-        <div id="fileTree" class="uc-upload-block">
-          <button id="ucGoBack">Volver</button>
-          <div class="uc-list">
-            <?php cu_show_files_tree() ?>
+        <form action="<?php admin_url('admin-post.php') ?>" method="POST">
+          <div id="fileTree" class="uc-upload-block">
+            <button id="ucGoBack">Volver</button>
+            <div class="uc-list">
+              <?php cu_show_files_tree() ?>
+            </div>
           </div>
-        </div>
+          <?php submit_button('Asignar Permisos') ?>
+        </form>
       </div>
     </div>
 

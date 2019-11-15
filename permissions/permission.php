@@ -105,7 +105,6 @@ function add_all_permisions(){
     }  
   }
   return 0;
-  } 
 }
 
 function cu_assign_permission(){
