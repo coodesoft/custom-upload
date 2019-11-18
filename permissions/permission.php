@@ -18,11 +18,7 @@ function cu_load_files_permision_by_user(){
 
     $queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
     $queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
-    /*
-    $prefix = $wpdb->prefix;
-    $queryStr = "SELECT ".$prefix."cu_files.*, ".$prefix."cu_access.access_id, ".$prefix."cu_access.user_id FROM ".$prefix."cu_files ";
-    $queryStr.= "LEFT JOIN ".$prefix."cu_access ON ".$prefix."cu_files.file_id=".$prefix."cu_access.file_id AND ".$prefix."cu_access.user_id=".$user;
-    */
+
     $access = $wpdb->get_results($queryStr, OBJECT);
    ?>
     <form action="<?= admin_url('admin-post.php') ?>" method="POST">
@@ -94,17 +90,23 @@ function add_permissions($permissions){
 }
 
 function add_all_permisions(){
-  $request = $_POST['select-all'];
+  global $wpdb;
+  $query = UPDATE 'wp_cu_files' SET 'file_dir' = ? WHERE 'wp_cu_files'.'file_id' = ?;
+
+  foreach
+  $request[] = $_POST['select-all'];
 
   if (!empty ($request)){
     $clients = Clients::getAll();
 
     if (!empty($clients)){
       $idFile = $_POST['id-file'];
-      return Access::add($idFile);
+      foreach ($clients as $client) {
+        Access::add($idFile);
+      }
+      
     }  
   }
-  return 0;
 }
 
 function cu_assign_permission(){

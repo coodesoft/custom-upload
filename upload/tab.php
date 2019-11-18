@@ -1,7 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../db/Files.php');
+require_once(__DIR__.'/../permissions/permission.php');
 require_once('util.php');
+
 
 function cu_show_files_tree(){
     $filesDir = get_cu_upload_folder();
@@ -13,7 +15,7 @@ function cu_show_files_tree(){
     $dirTree = navigate($filesDir);
 ?>
   <ul>
-    <?php $dir = $dirTree['dir'] ?>
+    <?php $dir = $dirTree['dir']; ?>
     <?php foreach ($dir as $key => $dElement) { ?>
       <li class="uc-dir"><?php echo $dElement?></li>
     <?php } ?>
