@@ -23,6 +23,11 @@ class Files{
     return $wpdb->query($query);
   }
 
+  static function getIdByFile($file){
+    global $wpdb;
+    $query = "SELECT * FROM"
+  }
+
 
   static function getTypes(){
     return [

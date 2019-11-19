@@ -1,7 +1,5 @@
 <?php
 
-
-
 function get_cu_upload_folder(){
   $plugin_path = plugin_dir_path(__FILE__);
 

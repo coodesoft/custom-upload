@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../db/Files.php');
-require_once(__DIR__.'/../permissions/permission.php');
+require_once(__DIR__ .'/../permissions/permission.php');
 require_once('util.php');
 
 
@@ -20,8 +20,10 @@ function cu_show_files_tree(){
       <li class="uc-dir"><?php echo $dElement?></li>
     <?php } ?>
     <?php $files = $dirTree['file'] ?>
-    <?php foreach ($files as $key => $fElement) { ?>
-      <li class="uc-files"><?php echo $fElement ?></li>
+    <?php foreach ($files as $key => $fElement) { 
+            $fileID = get_cu_file_id($fElement);
+    ?>
+      <li class="uc-files" data-id-file=""><?php echo $fElement ?></li>
     <?php } ?>
   </ul>
 

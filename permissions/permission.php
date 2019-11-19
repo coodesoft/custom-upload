@@ -91,9 +91,9 @@ function add_permissions($permissions){
 
 function add_all_permisions(){
   global $wpdb;
-  $query = UPDATE 'wp_cu_files' SET 'file_dir' = ? WHERE 'wp_cu_files'.'file_id' = ?;
+  $query = "UPDATE wp_cu_files SET file_dir = ? WHERE wp_cu_files.file_id = ?";
 
-  foreach
+  //foreach
   $request[] = $_POST['select-all'];
 
   if (!empty ($request)){
