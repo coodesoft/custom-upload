@@ -21,7 +21,7 @@ function cu_show_files_tree(){
     <?php } ?>
     <?php $files = $dirTree['file'] ?>
     <?php foreach ($files as $key => $fElement) { 
-            $fileID = get_cu_file_id($fElement);
+            //$fileID = get_cu_file_id($fElement);
     ?>
       <li class="uc-files" data-id-file=""><?php echo $fElement ?></li>
     <?php } ?>
@@ -103,7 +103,7 @@ $nombres_productos = array(
               <?php cu_show_files_tree() ?>
             </div>
           </div>
-          <?php submit_button('Asignar Permisos') ?>
+          <?php submit_button('Asignar Permisos', 'button-primary assign-all') ?>
         </form>
       </div>
     </div>

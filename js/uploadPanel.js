@@ -271,6 +271,26 @@
       }
     });
 
+    $(root).on('click', '.assign-all', function(){
+      e.preventDefault(); 
+      e.stopPropagation();
+      $.ajax({
+        url : admin_url('admin-ajax.php'),
+        type: 'post',
+        data: {
+          action : 'assign_ajax_permission',
+          id_file: id
+        },
+        beforeSend: function(){
+          link.html('Cargando ...');
+        },
+        success: function(resultado){
+           $('#post-'+id).find('.entry-content').html(resultado);		
+        }
+  
+      });
+    });
+
     let controller = new UploadController();
     let nav = new Navigator();
 
