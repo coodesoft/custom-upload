@@ -23,7 +23,7 @@ function cu_show_files_tree(){
     <?php foreach ($files as $key => $fElement) { 
             //$fileID = get_cu_file_id($fElement);
     ?>
-      <li class="uc-files" data-id-file=""><?php echo $fElement ?></li>
+      <li class="uc-files" data-id-file="<?php echo $key ?>"><?php echo $fElement ?></li>
     <?php } ?>
   </ul>
 
@@ -96,7 +96,7 @@ $nombres_productos = array(
 
       <div class="right-panel">
         <h3>Archivos Subidos</h3>
-        <form action="<?php admin_url('admin-post.php') ?>" method="POST">
+        <form id="assign-permission" action="<?php admin_url('admin-post.php') ?>" method="POST">
           <div id="fileTree" class="uc-upload-block">
             <button id="ucGoBack">Volver</button>
             <div class="uc-list">

@@ -270,10 +270,23 @@
         });
       }
     });
+    /*
+    root.querySelector("#assign-permission").addEventListener("submit", (e)=>{
+      e.preventDefault();
+      alert("hola");
+    })*/
 
-    $(root).on('click', '.assign-all', function(){
-      e.preventDefault(); 
-      e.stopPropagation();
+    $(root).on('submit', '#assign-permission', function(e){
+      e.preventDefault(); e.stopPropagation();
+      //let url = admin_url('admin-ajax.php');
+      let data=[]; let i=0;
+      let fileList = document.querySelector(".uc-files");
+      let elem = $(fileList).each(function(i){
+        console.log($(this));
+      }); //.attr('data-id-file');
+      
+      
+      /*
       $.ajax({
         url : admin_url('admin-ajax.php'),
         type: 'post',
@@ -287,8 +300,7 @@
         success: function(resultado){
            $('#post-'+id).find('.entry-content').html(resultado);		
         }
-  
-      });
+      });*/
     });
 
     let controller = new UploadController();
