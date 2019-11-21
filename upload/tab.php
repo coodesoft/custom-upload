@@ -23,7 +23,7 @@ function cu_show_files_tree(){
     <?php foreach ($files as $key => $fElement) { 
             //$fileID = get_cu_file_id($fElement);
     ?>
-      <li class="uc-files" data-id-file="<?php echo $key ?>"><?php echo $fElement ?></li>
+      <li class="uc-files" data-file-id="<?php echo $key ?>"><?php echo $fElement ?></li>
     <?php } ?>
   </ul>
 

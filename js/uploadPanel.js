@@ -270,12 +270,19 @@
         });
       }
     });
-    /*
-    root.querySelector("#assign-permission").addEventListener("submit", (e)=>{
-      e.preventDefault();
-      alert("hola");
-    })*/
+    
+    document.querySelector("#assign-permission").addEventListener("submit", (e)=>{
+      e.preventDefault(); e.stopPropagation();
+      let data=[];
+      let fileList = document.querySelector(".uc-files") //.dataset.fileId;
+      let files = document.querySelector(".uc-list").getElementsByTagName("li");
+      files.forEach(element => {
+        console.log(element);  
+      });
+      
+    })
 
+    /*
     $(root).on('submit', '#assign-permission', function(e){
       e.preventDefault(); e.stopPropagation();
       //let url = admin_url('admin-ajax.php');
@@ -285,8 +292,6 @@
         console.log($(this));
       }); //.attr('data-id-file');
       
-      
-      /*
       $.ajax({
         url : admin_url('admin-ajax.php'),
         type: 'post',
@@ -300,8 +305,8 @@
         success: function(resultado){
            $('#post-'+id).find('.entry-content').html(resultado);		
         }
-      });*/
-    });
+      });
+    });*/
 
     let controller = new UploadController();
     let nav = new Navigator();
