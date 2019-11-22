@@ -2,7 +2,7 @@
 
 class Files{
 
-  const TABLE = 'wd_cu_files';
+  const TABLE = $wpdb->prefix . ('cu_files');
 
   static function add($params){
     global $wpdb;
@@ -37,17 +37,17 @@ class Files{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = "wp_cu_default_files";
-    $files = "wp_cu_files";
-    $access = "wp_cu_access";
+    $default_table = $wpdb->prefix . ('default_files');
+    $files = $wpdb->prefix . ('files');
+    $access = $wpdb->prefix . ('access');
 
     $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
     $defaultFile = $wpdb->get_row($query, ARRAY_A);
 
     $result = $wpdb->insert($default_table, $defaultFile);
-    
+
     if($result !== false){
-      $queryClients = "SELECT * FROM wp_cu_clientes";
+      $queryClients = "SELECT * FROM " . $wpdb->prefix . ('clientes');
       $clients = $wpdb->get_results($queryClients, ARRAY_A);
       $file_id = $defaultFile['file_id'];
 
