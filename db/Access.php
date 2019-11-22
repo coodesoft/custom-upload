@@ -2,7 +2,7 @@
 
 class Access{
 
-  const TABLE = 'wp_cu_access';
+  const TABLE = 'wd_cu_access';
 
   static function deleteByIDs($IDs){
     $values = array();

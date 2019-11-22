@@ -37,9 +37,9 @@ class Files{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = "wp_cu_default_files";
-    $files = "wp_cu_files";
-    $access = "wp_cu_access";
+    $default_table = "wd_cu_default_files";
+    $files = "wd_cu_files";
+    $access = "wd_cu_access";
 
     $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
     $defaultFile = $wpdb->get_row($query, ARRAY_A);
