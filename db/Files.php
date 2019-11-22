@@ -37,9 +37,9 @@ class Files{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = "wd_cu_default_files";
-    $files = "wd_cu_files";
-    $access = "wd_cu_access";
+    $default_table = "wp_cu_default_files";
+    $files = "wp_cu_files";
+    $access = "wp_cu_access";
 
     $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
     $defaultFile = $wpdb->get_row($query, ARRAY_A);
@@ -47,21 +47,20 @@ class Files{
     $result = $wpdb->insert($default_table, $defaultFile);
     
     if($result !== false){
-      $queryClients = "SELECT client_id FROM wd_cu_clientes";
-      $clients = $wpdb->get_results($queryClients);
+      $queryClients = "SELECT * FROM wp_cu_clientes";
+      $clients = $wpdb->get_results($queryClients, ARRAY_A);
       $file_id = $defaultFile['file_id'];
 
-      $values = array();/*
-      foreach ( $clients as $key => $value ){
-
-        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $value['user_id'] );
-      }*/
+      $values = array();
       foreach ( $clients as $client ){
-
-        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client );
+        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client['cliente_id'] );
       }
-      $assignAccess = $wpdb->insert($access, $values);
-      //$res = Access::add($values);
+
+      $query = "INSERT INTO " .$access. " (file_id, user_id) VALUES ";
+      $query.= implode( ",\n", $values );
+
+      $res= $wpdb->query($query);
+      //throw new Exception (json_encode($clients), 1);
     }
 
     return $result;
