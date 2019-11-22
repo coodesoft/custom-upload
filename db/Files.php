@@ -29,7 +29,7 @@ class Files{
     if ($result !== false && $resultUnlink !== false){
       $wpdb->query('COMMIT');
       return true;
-    } else{
+    } else {
       $wpdb->query('ROLLBACK');
       return false;
     }
@@ -47,7 +47,7 @@ class Files{
     $result = $wpdb->insert($default_table, $defaultFile);
     
     if($result !== false){
-      $queryClients = "SELECT client_id FROM wp_cu_clientes";
+      $queryClients = "SELECT client_id FROM wd_cu_clientes";
       $clients = $wpdb->get_results($queryClients);
       $file_id = $defaultFile['file_id'];
 
