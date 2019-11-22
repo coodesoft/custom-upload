@@ -140,6 +140,20 @@ out: uploadPanel.css, compress: true
   background: #ccc;
   margin: 5px 0;
 }
+#ucEraseFiles{
+  background-repeat: no-repeat;
+  float: right;
+  width: 2em;
+  height: 2em;
+  margin-right:10px;
+  margin-top: -20px;
+}
+#cuAssignDefault{
+  float: left;
+  margin-top: -20px;
+  margin-left: 400px;
+  padding: 5px!important;
+}
 
 .uc-fileinput-wrapper{
   height: 45px;
@@ -204,6 +218,7 @@ out: uploadPanel.css, compress: true
 }
 
 .uc-list{
+  margin-top: 2%;
   width: 100%;
   max-height: 400px;
   display: block;
@@ -213,7 +228,7 @@ out: uploadPanel.css, compress: true
     margin-top: 0;
     margin-bottom: 0;
     li{
-      padding: 10px 0 10px 5px;
+      padding: 10px 0 20px 5px;
       cursor: pointer;
       &:nth-child(even){ background-color: #f2f2f2; }
       &.uc-dir{

@@ -3,12 +3,8 @@
 class Files{
   
   const TABLE = 'wd_cu_files';
-  private $prefix;
-
-  /*public function __construct(){
-    global $wpdb;
-    $this->prefix = $wpdb->prefix;
-  }*/
+  const TABLEACCESS = 'wd_cu_access';
+  const TABLEDEFAULT = 'wd_cu_default_files';
 
   static function add($params){
     global $wpdb;
@@ -23,6 +19,56 @@ class Files{
     return $wpdb->query($query);
   }
 
+  static function delete($path){
+    global $wpdb;
+    $query = "SELECT file_id FROM " . self::TABLE . " WHERE file_dir = '". $path ."'";
+    $file_id = $wpdb->get_var($query);
+
+    $wpdb->query('START TRANSACTION');
+    $resultUnlink = unlink($path);
+    $result = $wpdb->delete( self::TABLE, ['file_id' => $file_id], ['%d'] );
+    $resultAccess = $wpdb->delete( self::TABLEACCESS, ['file_id' => $file_id], ['%d'] );
+    $resultDefault = $wpdb->delete( self::TABLEDEFAULT, ['file_id' => $file_id], ['%d'] );
+
+    if ($result !== false && $resultUnlink !== false && $resultAccess !== false && $resultDefault !== false){
+      $wpdb->query('COMMIT');
+      return true;
+    } else {
+      $wpdb->query('ROLLBACK');
+      return false;
+    }
+  }
+
+  static function assignDefault($path){
+    global $wpdb;
+    $default_table = "wd_cu_default_files";
+    $files = "wd_cu_files";
+    $access = "wd_cu_access";
+
+    $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
+    $defaultFile = $wpdb->get_row($query, ARRAY_A);
+
+    $result = $wpdb->insert($default_table, $defaultFile);
+
+    if($result !== false){
+      $queryClients = "SELECT * FROM wd_gs_clientes";
+      $clients = $wpdb->get_results($queryClients, ARRAY_A);
+      $file_id = $defaultFile['file_id'];
+
+      $values = array();
+      foreach ( $clients as $client ){
+        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client['client_id'] );
+      }
+
+      $query = "INSERT INTO " .$access. " (file_id, user_id) VALUES ";
+      $query.= implode( ",\n", $values );
+
+      $res= $wpdb->query($query);
+      //throw new Exception (json_encode($clients), 1);
+    }
+
+    return $result;
+  }
 
   static function getTypes(){
     return [

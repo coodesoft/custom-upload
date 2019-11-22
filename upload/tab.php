@@ -2,6 +2,8 @@
 
 require_once(__DIR__ . '/../db/Files.php');
 require_once('util.php');
+require_once('deleteFiles.php');
+require_once('assign-default.php');
 
 function cu_show_files_tree(){
     $filesDir = get_cu_upload_folder();
@@ -19,7 +21,19 @@ function cu_show_files_tree(){
     <?php } ?>
     <?php $files = $dirTree['file'] ?>
     <?php foreach ($files as $key => $fElement) { ?>
-      <li class="uc-files"><?php echo $fElement ?></li>
+        <li class="uc-files"><?php echo $fElement; ?>
+          <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
+            <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
+            <input type="hidden" name="action" value="delete_files">
+            <button id="ucEraseFiles" style="background-image:url('../img/basura.svg')" type="submit"></button>
+          </form>
+          <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
+            <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
+            <input type="hidden" name="action" value="assign_default">
+            <button id="cuAssignDefault" type="submit">Asignación masiva</button>
+          </form>
+          
+        </li>
     <?php } ?>
   </ul>
 
@@ -38,6 +52,17 @@ function createUploadForn(){
     <p><?php echo $result = $_GET['assign_status'] ? 'La carga de archivos se completó exitosamente':'Se produjo un error inesperado durante la carga de archivos'?></p>
   </div>
 <?php }
+  if (isset($_GET['delete_status'])){ ?>
+  <div id="actionResult">
+    <p><?php echo $result = $_GET['delete_status'] ? 'El archivo se borró exitosamente':'Se produjo un error inesperado durante el borrado del archivos'?></p>
+  </div>
+<?php }
+if (isset($_GET['assign_default_status'])){ ?>
+  <div id="actionResult">
+    <p><?php echo $result = $_GET['assign_default_status'] ? 'El archivo se asignó exitosamente':'Se produjo un error inesperado durante la asignación masiva de archivos'?></p>
+  </div>
+<?php }
+
 $nombres_productos = array(
   'belen' => 'Belen',
   'bakhou' => 'Bakhou',
@@ -135,6 +160,8 @@ function cu_upload_files(){
   wp_redirect($url);
   exit;
 }
+
+
 
 add_action( 'admin_post_upload_files', 'cu_upload_files' );
 add_action( 'wp_ajax_cu_navigate', 'cu_show_files_tree' );

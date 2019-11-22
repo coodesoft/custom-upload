@@ -30,9 +30,13 @@ function assignCapabilities(){
           </select>
         </div>
         <div>
+<<<<<<< HEAD
           <button type="submit" name="button">Seleccionar</button>
           <label for="select-all">Seleccionar todos los permisos </label>
             <input type="checkbox" name="select-all" value=""/>
+=======
+          <button type="submit" name="button" onclick="enableAssingDefaultBtn()">Seleccionar</button>
+>>>>>>> 97943e17bde238eeaf32715f069048940bd0e75e
         </div>
       </form>
   </div>
