@@ -34,6 +34,39 @@ class Files{
       return false;
     }
   }
+
+  static function assignDefault($path){
+    global $wpdb;
+    $default_table = "wp_cu_default_files";
+    $files = "wp_cu_files";
+    $access = "wp_cu_access";
+
+    $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
+    $defaultFile = $wpdb->get_row($query, ARRAY_A);
+
+    $result = $wpdb->insert($default_table, $defaultFile);
+    
+    if($result !== false){
+      $queryClients = "SELECT client_id FROM wp_cu_clientes";
+      $clients = $wpdb->get_results($queryClients);
+      $file_id = $defaultFile['file_id'];
+
+      $values = array();/*
+      foreach ( $clients as $key => $value ){
+
+        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $value['user_id'] );
+      }*/
+      foreach ( $clients as $client ){
+
+        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client );
+      }
+      $assignAccess = $wpdb->insert($access, $values);
+      //$res = Access::add($values);
+    }
+
+    return $result;
+  }
+
   static function getTypes(){
     return [
       ['label' => 'JPG',  'id' => 0 ],
