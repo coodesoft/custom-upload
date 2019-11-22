@@ -134,9 +134,9 @@ function cu_create_table(){
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
-
     }
 }
+
 
 function cu_install(){
 	cu_create_table();
