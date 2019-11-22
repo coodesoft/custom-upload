@@ -2,7 +2,9 @@
 
 class Files{
 
-  const TABLE = $wpdb->prefix . ('cu_files');
+  const TABLE = 'wd_cu_files';
+  const TABLEACCESS = 'wd_cu_access';
+  const TABLEDEFAULT = 'wd_cu_default_files';
 
   static function add($params){
     global $wpdb;
@@ -25,8 +27,10 @@ class Files{
     $wpdb->query('START TRANSACTION');
     $resultUnlink = unlink($path);
     $result = $wpdb->delete( self::TABLE, ['file_id' => $file_id], ['%d'] );
+    $resultAccess = $wpdb->delete( self::TABLEACCESS, ['file_id' => $file_id], ['%d'] );
+    $resultDefault = $wpdb->delete( self::TABLEDEFAULT, ['file_id' => $file_id], ['%d'] );
 
-    if ($result !== false && $resultUnlink !== false){
+    if ($result !== false && $resultUnlink !== false && $resultAccess !== false && $resultDefault !== false){
       $wpdb->query('COMMIT');
       return true;
     } else {
@@ -37,9 +41,9 @@ class Files{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = $wpdb->prefix . ('default_files');
-    $files = $wpdb->prefix . ('files');
-    $access = $wpdb->prefix . ('access');
+    $default_table = "wp_cu_default_files";
+    $files = "wp_cu_files";
+    $access = "wp_cu_access";
 
     $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
     $defaultFile = $wpdb->get_row($query, ARRAY_A);
@@ -47,7 +51,7 @@ class Files{
     $result = $wpdb->insert($default_table, $defaultFile);
 
     if($result !== false){
-      $queryClients = "SELECT * FROM " . $wpdb->prefix . ('clientes');
+      $queryClients = "SELECT * FROM wp_cu_clientes";
       $clients = $wpdb->get_results($queryClients, ARRAY_A);
       $file_id = $defaultFile['file_id'];
 
