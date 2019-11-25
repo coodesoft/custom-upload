@@ -64,7 +64,7 @@ class Files{
       $query.= implode( ",\n", $values );
 
       $res= $wpdb->query($query);
-      //throw new Exception (json_encode($clients), 1);
+      //throw new Exception (json_encode($values), 1);
     }
 
     return $result;
