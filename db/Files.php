@@ -42,25 +42,46 @@ class Files{
   static function assignDefault($path){
     global $wpdb;
     $default_table = "wd_cu_default_files";
-    $files = "wd_cu_files";
-    $access = "wd_cu_access";
+    $files_table = "wd_cu_files";
+    $access_table = "wd_cu_access";
 
-    $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
-    $defaultFile = $wpdb->get_row($query, ARRAY_A);
+    $queryFiles = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
+    $files = $wpdb->get_row($queryFiles, ARRAY_A);
 
-    $result = $wpdb->insert($default_table, $defaultFile);
+    $file_id = $defaultFile['file_id'];
+    $queryDefault = "SELECT * FROM " . $default_table . " WHERE file_id = '". $file_id ."'";
+    $existDefault = $wpdb->get_row($queryDefault, ARRAY_A);
 
-    if($result !== false){
+    var_dump($files);
+    var_dump($default);
+    throw new Exception (json_encode($files), 1);
+    /*
+    foreach ($files as $value) {
+        $defaultFiles['default_id'] = 0;
+        $defaultFiles['file_id'] = $value['file_id'];
+        $defaultFiles['file_dir'] = $value['file_dir'];
+        $defaultFiles['file_type'] = $value['file_type'];
+    }*/
+
+    // acá chequeo si ya existe el archivo en la tabla cu_default_files. (consultar si existe file_id)
+    if (!empty($existDefault)) {
+      $result = $wpdb->insert($default_table, $defaultFiles);  
+    }
+    
+
+    //var_dump($result);
+    //throw new Exception (json_encode($result), 1);
+
+    if(!empty($result)){
       $queryClients = "SELECT * FROM wd_gs_clientes";
       $clients = $wpdb->get_results($queryClients, ARRAY_A);
-      $file_id = $defaultFile['file_id'];
 
       $values = array();
       foreach ( $clients as $client ){
         $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client['client_id'] );
       }
 
-      $query = "INSERT INTO " .$access. " (file_id, user_id) VALUES ";
+      $query = "INSERT INTO " .$access_table. " (file_id, user_id) VALUES ";
       $query.= implode( ",\n", $values );
 
       $res= $wpdb->query($query);
