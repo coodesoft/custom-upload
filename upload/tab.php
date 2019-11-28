@@ -21,20 +21,27 @@ function cu_show_files_tree(){
     <?php } ?>
     <?php $files = $dirTree['file'] ?>
     <?php foreach ($files as $key => $fElement) { ?>
-        <li class="uc-files"><?php echo $fElement; ?>
-          <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
-            <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
-            <input type="hidden" name="action" value="delete_files">
-            <button id="ucEraseFiles" style="background-image:url('../img/basura.svg')" type="submit"></button>
-          </form>
-          <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
-            <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
-            <input type="hidden" name="action" value="assign_default">
-            <button id="cuAssignDefault" type="submit">Asignación masiva</button>
-          </form>
+        <li class="uc-files">
+          <div class="uc-name"><?php echo $fElement; ?></div>
           
+          <div class="uc-assign">
+            <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
+              <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
+              <input type="hidden" name="action" value="assign_default">
+              <button id="cuAssignDefault" type="submit">Asignación masiva</button>
+            </form>
+          </div>
+
+          <div class="uc-delete">
+            <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
+              <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
+              <input type="hidden" name="action" value="delete_files">
+              <button id="ucEraseFiles" style="background-image:url('../img/basura.svg')" type="submit"></button>
+            </form>
+          </div>
         </li>
     <?php } ?>
+
   </ul>
 
 <?php }

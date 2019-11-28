@@ -52,42 +52,22 @@ class Files{
     $queryDefault = "SELECT * FROM " . $default_table . " WHERE file_id = '". $file_id ."'";
     $existDefault = $wpdb->get_row($queryDefault, ARRAY_A);
 
-    //var_dump($file); /* ok. retorna archivo */
-    //var_dump($existDefault);  /* ok. retorna null al no encontrar el archivo en la tabla default */
-    //throw new Exception (json_encode($file), 1);
-    /*
-    foreach ($file as $value) {
-        $defaultFiles['default_id'] = 0;
-        $defaultFiles['file_id'] = $value['file_id'];
-        $defaultFiles['file_dir'] = $value['file_dir'];
-        $defaultFiles['file_type'] = $value['file_type'];
-    }*/
-
     // acá chequeo si ya existe el archivo en la tabla cu_default_files. si null, empty() devuelve true
     if (empty($existDefault)) {
       $result = $wpdb->insert($default_table, $file);
     }
 
-    //var_dump($existDefault); /* ok. retorna null si no está como default */
-    //var_dump($result); // /* ok. retorna la cantidad de filas insertadas (1) o null si no lo hace */
-    //throw new Exception (json_encode($result), 1);
 
     if (!empty($result)) {
       $queryClients = "SELECT * FROM wd_gs_clientes";
       $clients = $wpdb->get_results($queryClients, ARRAY_A);
 
-      //var_dump($clients); /* ok. retorna las filas de la tabla
-      //throw new Exception (json_encode($clients), 1);
-
       $values = array();
       foreach ( $clients as $client ){
-        $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['client_id'] );
+        $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['id'] );
       }
 
-      var_dump($values);
-      throw new Exception (json_encode($values), 1);
-
-      $query = "INSERT INTO " .$access_table. " (file_id, user_id) VALUES ";
+      $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
       $query.= implode( ",\n", $values );
 
       $res= $wpdb->query($query);
