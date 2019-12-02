@@ -126,7 +126,7 @@ function cu_create_table(){
         $charset_collate = $cudb->get_charset_collate();
 
         $sql = "CREATE TABLE $table_name (
-            file_id bigint(20) NOT NULL AUTO_INCREMENT,
+            file_id bigint(20) NOT NULL,
             file_dir varchar(120) NOT NULL,
             file_type varchar(120) NOT NULL,
             PRIMARY KEY  (file_id)

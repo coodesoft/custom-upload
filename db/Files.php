@@ -42,32 +42,40 @@ class Files{
   static function assignDefault($path){
     global $wpdb;
     $default_table = "wd_cu_default_files";
-    $files = "wd_cu_files";
-    $access = "wd_cu_access";
+    $files_table = "wd_cu_files";
+    $access_table = "wd_cu_access";
 
-    $query = "SELECT * FROM " . $files . " WHERE file_dir = '". $path ."'";
-    $defaultFile = $wpdb->get_row($query, ARRAY_A);
+    $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
+    $file = $wpdb->get_row($queryFile, ARRAY_A);
 
-    $result = $wpdb->insert($default_table, $defaultFile);
+    $file_id = $file['file_id'];
+    $queryDefault = "SELECT * FROM " . $default_table . " WHERE file_id = '". $file_id ."'";
+    $existDefault = $wpdb->get_row($queryDefault, ARRAY_A);
 
-    if($result !== false){
+    // acá chequeo si ya existe el archivo en la tabla cu_default_files. si null, empty() devuelve true
+    if (empty($existDefault)) {
+      $result = $wpdb->insert($default_table, $file);
+    }
+
+
+    if (!empty($result)) {
       $queryClients = "SELECT * FROM wd_gs_clientes";
       $clients = $wpdb->get_results($queryClients, ARRAY_A);
-      $file_id = $defaultFile['file_id'];
 
       $values = array();
       foreach ( $clients as $client ){
-        $values[] = $wpdb->prepare( "(%d,%d)", $file_id, $client['client_id'] );
+        $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['id'] );
       }
 
-      $query = "INSERT INTO " .$access. " (file_id, user_id) VALUES ";
+      $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
       $query.= implode( ",\n", $values );
 
       $res= $wpdb->query($query);
-      //throw new Exception (json_encode($clients), 1);
+    } else {
+      $res = null;
     }
 
-    return $result;
+    return $res;
   }
 
   static function getTypes(){
