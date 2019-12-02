@@ -54,28 +54,32 @@ class Files{
 
     // acá chequeo si ya existe el archivo en la tabla cu_default_files. si null, empty() devuelve true
     if (empty($existDefault)) {
+      $wpdfb->query("START TRANSACTION");
       $result = $wpdb->insert($default_table, $file);
-    }
+      // acá chequeo si inserta el archivo en la tabla cu_default_files. 
+      if (!empty($result)) {
+        $queryClients = "SELECT * FROM wd_gs_clientes";
+        $clients = $wpdb->get_results($queryClients, ARRAY_A);
 
+        $values = array();
+        foreach ($clients as $client){
+          $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['id'] );
+        }
 
-    if (!empty($result)) {
-      $queryClients = "SELECT * FROM wd_gs_clientes";
-      $clients = $wpdb->get_results($queryClients, ARRAY_A);
+        $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
+        $query.= implode( ",\n", $values );
 
-      $values = array();
-      foreach ( $clients as $client ){
-        $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['id'] );
+        $res = $wpdb->query($query);
       }
-
-      $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
-      $query.= implode( ",\n", $values );
-
-      $res= $wpdb->query($query);
-    } else {
-      $res = null;
     }
 
-    return $res;
+    if (empty($existDefault) && !empty($result)){
+      $wpdb->query("COMMIT");
+      return true;
+    } else {
+      $wpdb->query("ROLLBACK");
+      return false;
+    }
   }
 
   static function getTypes(){
