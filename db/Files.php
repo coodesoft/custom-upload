@@ -1,7 +1,6 @@
 <?php
 
-class Files{
-  
+class Files extends DbAbstract{
   const TABLE = 'wd_cu_files';
   const TABLEACCESS = 'wd_cu_access';
   const TABLEDEFAULT = 'wd_cu_default_files';
@@ -14,7 +13,7 @@ class Files{
       $values[] = $wpdb->prepare( "(%s,%s, %d)", 'DEFAULT', $value['file_dir'], $value['file_type'] );
 
     $query = "INSERT INTO " .Files::TABLE. " (file_id, file_dir, file_type) VALUES ";
-    $query .= implode( ",\n", $values );
+    $query.= implode( ",\n", $values );
 
     return $wpdb->query($query);
   }
@@ -41,9 +40,9 @@ class Files{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = "wd_cu_default_files";
-    $files_table = "wd_cu_files";
-    $access_table = "wd_cu_access";
+    $default_table = $wpdb->prefix . "cu_default_files";
+    $files_table = $wpdb->prefix . "cu_files";
+    $access_table = $wpdb->prefix . "cu_access";
 
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file = $wpdb->get_row($queryFile, ARRAY_A);
