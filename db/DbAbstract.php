@@ -1,15 +1,19 @@
 <?php
 abstract class DbAbstract {
-    protected $prefix;
+    private $prefix;
 
-    protected function __construct() {
+    public function __construct() {
         global $wpdb;
         $this->prefix = $wpdb->prefix;
     }
 
-    /*
-    function getPrefix() {
+    public function getPrefix() {
         return $this->prefix;
-    } */
+    }
+
+    private function getTableName(){
+        
+        return $name;
+    }
 }
 ?>

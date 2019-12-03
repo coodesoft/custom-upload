@@ -4,6 +4,7 @@ function cu_assign_default(){
   if (isset($_POST['url'])){
     $url = $_POST['url'];
     $uploadStatus = Files::assignDefault($url);
+    //$uploadStatus = new Files();
   } else 
     $uploadStatus = false;
 

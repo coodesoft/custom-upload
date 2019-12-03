@@ -1,18 +1,24 @@
 <?php
+require_once(__DIR__."/DbAbstract.php");
 
 class Files extends DbAbstract{
-  const TABLE = 'wd_cu_files';
-  const TABLEACCESS = 'wd_cu_access';
-  const TABLEDEFAULT = 'wd_cu_default_files';
+  /*
+  private $prefix;
+  
+  function __construct(){
+    $this->prefix = getPrefix();
+  }
+  */
 
   static function add($params){
     global $wpdb;
+    $files_table = $wpdb->prefix . "cu_files";
     $values = array();
 
     foreach ( $params as $key => $value )
       $values[] = $wpdb->prepare( "(%s,%s, %d)", 'DEFAULT', $value['file_dir'], $value['file_type'] );
 
-    $query = "INSERT INTO " .Files::TABLE. " (file_id, file_dir, file_type) VALUES ";
+    $query = "INSERT INTO " . $files_table . " (file_id, file_dir, file_type) VALUES ";
     $query.= implode( ",\n", $values );
 
     return $wpdb->query($query);
@@ -20,14 +26,17 @@ class Files extends DbAbstract{
 
   static function delete($path){
     global $wpdb;
-    $query = "SELECT file_id FROM " . self::TABLE . " WHERE file_dir = '". $path ."'";
+    $files_table = $wpdb->prefix . "cu_files";
+    $access_table = $wpdb->prefix . "cu_access";
+    $default_table = $wpdb->prefix . "cu_default_files";
+    $query = "SELECT file_id FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file_id = $wpdb->get_var($query);
 
     $wpdb->query('START TRANSACTION');
     $resultUnlink = unlink($path);
-    $result = $wpdb->delete( self::TABLE, ['file_id' => $file_id], ['%d'] );
-    $resultAccess = $wpdb->delete( self::TABLEACCESS, ['file_id' => $file_id], ['%d'] );
-    $resultDefault = $wpdb->delete( self::TABLEDEFAULT, ['file_id' => $file_id], ['%d'] );
+    $result = $wpdb->delete( $files_table, ['file_id' => $file_id], ['%d'] );
+    $resultAccess = $wpdb->delete( $access_table, ['file_id' => $file_id], ['%d'] );
+    $resultDefault = $wpdb->delete( $default_table, ['file_id' => $file_id], ['%d'] );
 
     if ($result !== false && $resultUnlink !== false && $resultAccess !== false && $resultDefault !== false){
       $wpdb->query('COMMIT');
@@ -42,6 +51,7 @@ class Files extends DbAbstract{
     global $wpdb;
     $default_table = $wpdb->prefix . "cu_default_files";
     $files_table = $wpdb->prefix . "cu_files";
+    //$algo = $this->prefix . "cu_files";
     $access_table = $wpdb->prefix . "cu_access";
 
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
