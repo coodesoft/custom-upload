@@ -2,17 +2,9 @@
 require_once(__DIR__."/DbAbstract.php");
 
 class Files extends DbAbstract{
-  /*
-  private $prefix;
-  
-  function __construct(){
-    $this->prefix = getPrefix();
-  }
-  */
 
   static function add($params){
-    global $wpdb;
-    $files_table = $wpdb->prefix . "cu_files";
+    $files_table = self::getTable("files");
     $values = array();
 
     foreach ( $params as $key => $value )
@@ -25,10 +17,9 @@ class Files extends DbAbstract{
   }
 
   static function delete($path){
-    global $wpdb;
-    $files_table = $wpdb->prefix . "cu_files";
-    $access_table = $wpdb->prefix . "cu_access";
-    $default_table = $wpdb->prefix . "cu_default_files";
+    $files_table = self::getTable("files");
+    $access_table = self::getTable("access");
+    $default_table = self::getTable("default");
     $query = "SELECT file_id FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file_id = $wpdb->get_var($query);
 
@@ -48,12 +39,10 @@ class Files extends DbAbstract{
   }
 
   static function assignDefault($path){
-    global $wpdb;
-    $default_table = $wpdb->prefix . "cu_default_files";
-    $files_table = $wpdb->prefix . "cu_files";
-    //$algo = $this->prefix . "cu_files";
-    $access_table = $wpdb->prefix . "cu_access";
-
+    $default_table = self::getTable("default");
+    $files_table = self::getTable("files");
+    $access_table = self::getTable("access");
+    
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file = $wpdb->get_row($queryFile, ARRAY_A);
 
@@ -63,11 +52,11 @@ class Files extends DbAbstract{
 
     // acá chequeo si ya existe el archivo en la tabla cu_default_files. si null, empty() devuelve true
     if (empty($existDefault)) {
-      $wpdfb->query("START TRANSACTION");
+      $wpdb->query("START TRANSACTION");
       $result = $wpdb->insert($default_table, $file);
       // acá chequeo si inserta el archivo en la tabla cu_default_files. 
       if (!empty($result)) {
-        $queryClients = "SELECT * FROM wd_gs_clientes";
+        $queryClients = "SELECT * FROM wd_gs_clientes"; // esta es una tabla del plugin GlobalSaxCore
         $clients = $wpdb->get_results($queryClients, ARRAY_A);
 
         $values = array();

@@ -3,7 +3,7 @@ class Clients{
     
   static function getSpecialKeys(){
       return ['direccion_publica', 'sitio_web', 'telefono'];
-  }    
+  }
     
   static function add($name){
     global $wpdb;

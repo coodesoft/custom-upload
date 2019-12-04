@@ -1,19 +1,31 @@
 <?php
 abstract class DbAbstract {
-    private $prefix;
 
-    public function __construct() {
+    public static function getPrefix() {
         global $wpdb;
-        $this->prefix = $wpdb->prefix;
+        return $wpdb->prefix;
     }
 
-    public function getPrefix() {
-        return $this->prefix;
+    public static function getTableName(){
+        return [
+            "access" => "cu_access",
+            "clientes" => "cu_clientes",
+            "default" => "cu_default_files",
+            "files" => "cu_files",
+            "history" => "cu_history",
+            "sucursales" => "cu_sucursales"
+        ];
     }
-
-    private function getTableName(){
-        
-        return $name;
+    
+    public static function getTable($name){
+        $tables = self::getTableName();
+        $result = self::getPrefix();
+        foreach ($tables as $key => $value) {
+            if ($key == $name){
+                $result.= $tables[$name];
+            }
+        }
+        return $result;
     }
 }
 ?>

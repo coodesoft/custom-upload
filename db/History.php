@@ -1,11 +1,10 @@
 <?php
 
-class History{
+class History extends DbAbstract{
   
   static function getAllByUser($id){
-    global $wpdb;
-    $history_table = $wpdb->prefix . "cu_history";
-    $files_table = $wpdb->prefix . "cu_files";
+    $history_table = self::getTable("history");
+    $files_table = self::getTable("files");
     $queryStr = "SELECT " . $history_table . ".*, " . $files_table . ".file_dir FROM " . $history_table;
     $queryStr.= " LEFT JOIN " . $files_table . " ON " . $files_table . ".file_id=" . $history_table . ".file_id WHERE " . $history_table . ".user_id=%d";
     $query = $wpdb->prepare($queryStr, array($id));
@@ -13,8 +12,7 @@ class History{
   }
 
   static function add($params){
-    global $wpdb;
-    $history_table = $wpdb->prefix . "cu_history";
+    $history_table = self::getTable("history");
     $values = array();
 
     foreach ( $params as $key => $value )

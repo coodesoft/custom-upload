@@ -1,11 +1,10 @@
 <?php
 require_once(__DIR__."/DbAbstract.php");
 
-class Access {
+class Access extends DbAbstract{
   
   static function deleteByIDs($IDs){
-    global $wpdb;
-    $access_table = $wpdb->prefix . "cu_access";
+    $access_table = self::getTable("access");
     $values = array();
     
     $query = "DELETE FROM " .$access_table. " WHERE access_id IN ($IDs)";
@@ -13,14 +12,12 @@ class Access {
   }
 
   static function deleteByUser($id){
-    global $wpdb;
-    $access_table = $wpdb->prefix . "cu_access";
+    $access_table = self::getTable("access");
     return $wpdb->delete($access_table, ['user_id' => $id], ['%d']);
   }
 
   static function add($params){
-    global $wpdb;
-    $access_table = $wpdb->prefix . "cu_access";
+    $access_table = self::getTable("access");
     $values = array();
 
     foreach ( $params as $key => $value )
