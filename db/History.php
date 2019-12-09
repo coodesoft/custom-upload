@@ -1,6 +1,14 @@
 <?php
+require_once(__DIR__."/DbAbstract.php");
 
 class History extends DbAbstract{
+
+  public static function getTableName(){
+    return [
+      "files" => "cu_files",
+      "history" => "cu_history"
+    ];
+  }
   
   static function getAllByUser($id){
     $history_table = self::getTable("history");

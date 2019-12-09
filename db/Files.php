@@ -3,7 +3,26 @@ require_once(__DIR__."/DbAbstract.php");
 
 class Files extends DbAbstract{
 
+  public static function getTableName(){
+    return [
+      "default" => "cu_default_files",
+      "files" => "cu_files"
+    ];
+  }
+
+  public static function getTypes(){
+    return [
+      ['label' => 'JPG',  'id' => 0 ],
+      ['label' => '1X1',  'id' => 1 ],
+      ['label' => 'PDF',  'id' => 2 ],
+      ['label' => 'Precios', 'id' => 3 ],
+      ['label' => 'Pedidos', 'id' => 4 ],
+      ['label' => 'Video',  'id' => 5 ]
+    ];
+  }
+
   static function add($params){
+    global $wpdb;
     $files_table = self::getTable("files");
     $values = array();
 
@@ -17,8 +36,9 @@ class Files extends DbAbstract{
   }
 
   static function delete($path){
+    global $wpdb;
     $files_table = self::getTable("files");
-    $access_table = self::getTable("access");
+    $access_table = Access::getTable("access");
     $default_table = self::getTable("default");
     $query = "SELECT file_id FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file_id = $wpdb->get_var($query);
@@ -39,9 +59,10 @@ class Files extends DbAbstract{
   }
 
   static function assignDefault($path){
+    global $wpdb;
     $default_table = self::getTable("default");
     $files_table = self::getTable("files");
-    $access_table = self::getTable("access");
+    $access_table = Access::getTable("access");
     
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file = $wpdb->get_row($queryFile, ARRAY_A);
@@ -56,7 +77,8 @@ class Files extends DbAbstract{
       $result = $wpdb->insert($default_table, $file);
       // acá chequeo si inserta el archivo en la tabla cu_default_files. 
       if (!empty($result)) {
-        $queryClients = "SELECT * FROM wd_gs_clientes"; // esta es una tabla del plugin GlobalSaxCore
+        $clientes_table = Clients::getTable("clientes_gs"); // esta es una tabla del plugin GlobalSaxCore
+        $queryClients = "SELECT * FROM " . $clientes_table; 
         $clients = $wpdb->get_results($queryClients, ARRAY_A);
 
         $values = array();
@@ -79,16 +101,4 @@ class Files extends DbAbstract{
       return false;
     }
   }
-
-  static function getTypes(){
-    return [
-      ['label' => 'JPG',  'id' => 0 ],
-      ['label' => '1X1',  'id' => 1 ],
-      ['label' => 'PDF',  'id' => 2 ],
-      ['label' => 'Precios', 'id' => 3 ],
-      ['label' => 'Pedidos', 'id' => 4 ],
-      ['label' => 'Video',  'id' => 5 ]
-    ];
-  }
-
 }

@@ -2,6 +2,12 @@
 require_once(__DIR__."/DbAbstract.php");
 
 class Access extends DbAbstract{
+
+  public static function getTableName(){
+    return [
+      "access" => "cu_access"
+    ];
+  }
   
   static function deleteByIDs($IDs){
     $access_table = self::getTable("access");
