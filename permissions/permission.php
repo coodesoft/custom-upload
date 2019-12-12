@@ -2,6 +2,17 @@
 
 require_once(__DIR__ . '/../db/Access.php');
 
+/**
+ * Load files by selected user
+ * 
+ * get params from admin's panel plugin
+ * 
+ * @param none
+ * 
+ * @return none
+ * 
+ */
+
 function cu_load_files_permision_by_user(){
     global $wpdb;
 
@@ -50,6 +61,16 @@ function cu_load_files_permision_by_user(){
     wp_die();
   }
 
+/**
+ * Prepare data for comparison
+ * 
+ * This method generate an array with 
+ * 
+ * @param
+ * 
+ * @return
+ */
+
 function prepare_data($req){
   $userID = $req['user'];
   $filesID = $req['files'];
@@ -86,6 +107,14 @@ function delete_permissions($toDelete){
   }
 }
 
+/**
+ * Add permissions 
+ * 
+ * @param $permission 
+ * 
+ * @return int (from query result)
+ */
+
 function add_permissions($permissions){
   if (!empty($permissions))
     return Access::add($permissions);
@@ -113,6 +142,16 @@ function add_all_permisions(){
     exit;
   }
 }
+
+/**
+ * Assign permission for a selected user
+ * 
+ * get params from admin's panel plugin 
+ * 
+ * @param none
+ * 
+ * @return none
+ */
 
 function cu_assign_permission(){
   global $wpdb;
