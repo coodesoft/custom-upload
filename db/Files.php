@@ -60,14 +60,16 @@ class Files extends DbAbstract{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = self::getTable("default");
-    $files_table = self::getTable("files");
+    $default_table = static::getTable("default");
+    $files_table = static::getTable("files");
     $access_table = Access::getTable("access");
     
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
-    $tabla = self::getTable("default");
-    var_dump($tabla);
-    throw new Exception (json_encode($queryFile), 1);
+    
+    
+    var_dump($access_table);
+    throw new Exception (json_encode($access_table), 1);
+    
 
     $file = $wpdb->get_row($queryFile, ARRAY_A);
 

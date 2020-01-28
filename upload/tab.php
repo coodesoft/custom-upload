@@ -133,7 +133,6 @@ $nombres_productos = array(
               <?php cu_show_files_tree() ?>
             </div>
           </div>
-          <?php submit_button('Asignar Permisos', 'button-primary assign-all') ?>
         </form>
       </div>
     </div>

@@ -9,11 +9,11 @@ abstract class DbAbstract {
   public static function getTableName(){}
     
   public static function getTable($name){
-    $tables = self::getTableName();
-    $result = self::getPrefix();
+    $tables = static::getTableName();
+    $result = static::getPrefix();
     foreach ($tables as $key => $value) {
       if ($key == $name)
-        $result.= $tables[$name];
+        $result.= $tables[$value];
     }
     return $result;
   }
