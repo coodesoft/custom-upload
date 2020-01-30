@@ -63,7 +63,11 @@ class Files extends DbAbstract{
     $default_table = self::getTable("default");
     $files_table = self::getTable("files");
     $access_table = Access::getTable("access");
-
+    $message = [
+      '1' => 'El archivo se asignó exitosamente',
+      '2' => 'Ocurrió un error al asignar masivamente',
+      '3' => 'El archivo ya fue asignado masivamente'
+    ];
     /*
     var_dump($default_table);
     throw new Exception(json_encode($default_table), 1);
@@ -93,15 +97,15 @@ class Files extends DbAbstract{
         $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
         $query.= implode( ",\n", $values );
         $res = $wpdb->query($query);
-      } 
-    } 
+      } // retornar $id = "2";
+    } // retornar $id = "3";
 
     if (empty($existDefault) && !empty($result)){
       $wpdb->query("COMMIT");
-      return true; 
+      return true; // retornar $message[$id]
     } else {
       $wpdb->query("ROLLBACK");
-      return false; 
+      return false; // retornar $message[$id]
     }
   }
 }
