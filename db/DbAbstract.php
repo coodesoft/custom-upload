@@ -14,6 +14,7 @@ abstract class DbAbstract {
     foreach ($tables as $key => $value) {
       if ($key == $name)
         $result.= $tables[$key];
+    break;
     }
     return $result;
   }
