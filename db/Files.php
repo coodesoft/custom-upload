@@ -65,12 +65,6 @@ class Files extends DbAbstract{
     $access_table = Access::getTable("access");
     
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
-    
-    
-    var_dump($access_table);
-    throw new Exception (json_encode($access_table), 1);
-    
-
     $file = $wpdb->get_row($queryFile, ARRAY_A);
 
     $file_id = $file['file_id'];
@@ -94,7 +88,6 @@ class Files extends DbAbstract{
 
         $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
         $query.= implode( ",\n", $values );
-
         $res = $wpdb->query($query);
       }
     }

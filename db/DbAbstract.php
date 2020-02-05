@@ -13,7 +13,8 @@ abstract class DbAbstract {
     $result = static::getPrefix();
     foreach ($tables as $key => $value) {
       if ($key == $name)
-        $result.= $tables[$value];
+        $result.= $tables[$key];
+    break;
     }
     return $result;
   }
