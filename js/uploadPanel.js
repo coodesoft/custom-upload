@@ -278,7 +278,7 @@
       let files = document.querySelector(".uc-list").getElementsByTagName("li");
       
       
-    })
+    });
 
     /*
     $(root).on('submit', '#assign-permission', function(e){

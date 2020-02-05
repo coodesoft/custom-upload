@@ -34,4 +34,15 @@ class Access extends DbAbstract{
 
     return $wpdb->query($query);
   }
+
+  static function permissionsFilesList(){
+    global $wpdb;
+    $access_table = self::getTable("access");
+    $files_table = Files::getTable("files");
+
+    $queryStr = "SELECT " . $files_table . ".*, " . $access_table . ".access_id, " . $access_table . ".user_id FROM " . $files_table . " ";
+    $queryStr.= "LEFT JOIN " . $access_table . " ON " . $files_table . ".file_id=" . $access_table . ".file_id AND " . $access_table . ".user_id=".$user;
+    
+    return $wpdb->get_results($queryStr, OBJECT);
+  }
 }
