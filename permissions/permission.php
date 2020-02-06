@@ -85,10 +85,7 @@ function add_permissions($permissions){
 
 function cu_assign_permission(){
   $req = $_POST['Permissions'];
-
-  global $wpdb;
-  $query = $wpdb->prepare("SELECT * FROM wp_cu_access WHERE user_id=%d", $req['user']);
-  $stored = $wpdb->get_results($query, ARRAY_A);
+  $stored = Access::getPermissions($req);
 
   $permissionsArr = prepare_data($req);
   $comparison = compare_data($stored, $permissionsArr);
