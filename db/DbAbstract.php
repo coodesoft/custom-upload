@@ -10,7 +10,7 @@ abstract class DbAbstract {
     
   public static function getTable($name){
     $tables = static::getTableName();
-    $result = static::getPrefix();
+    $result = self::getPrefix();
     foreach ($tables as $key => $value) {
       if ($key == $name)
         $result.= $tables[$key];

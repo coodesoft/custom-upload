@@ -276,11 +276,9 @@
       let data=[];
       let fileList = document.querySelector(".uc-files") //.dataset.fileId;
       let files = document.querySelector(".uc-list").getElementsByTagName("li");
-      files.forEach(element => {
-        console.log(element);  
-      });
       
-    })
+      
+    });
 
     /*
     $(root).on('submit', '#assign-permission', function(e){

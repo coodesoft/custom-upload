@@ -18,12 +18,12 @@ class Access extends DbAbstract{
   }
 
   static function deleteByUser($id){
-    $access_table = static::getTable("access");
+    $access_table = self::getTable("access");
     return $wpdb->delete($access_table, ['user_id' => $id], ['%d']);
   }
 
   static function add($params){
-    $access_table = static::getTable("access");
+    $access_table = self::getTable("access");
     $values = array();
 
     foreach ( $params as $key => $value )
@@ -33,5 +33,23 @@ class Access extends DbAbstract{
     $query .= implode( ",\n", $values );
 
     return $wpdb->query($query);
+  }
+
+  static function permissionsFilesList(){
+    global $wpdb;
+    $access_table = self::getTable("access");
+    $files_table = Files::getTable("files");
+
+    $queryStr = "SELECT " . $files_table . ".*, " . $access_table . ".access_id, " . $access_table . ".user_id FROM " . $files_table . " ";
+    $queryStr.= "LEFT JOIN " . $access_table . " ON " . $files_table . ".file_id=" . $access_table . ".file_id AND " . $access_table . ".user_id=".$user;
+    
+    return $wpdb->get_results($queryStr, OBJECT);
+  }
+
+  static function getPermissions($req){
+    global $wpdb;
+    $access_table = self::getTable("access");
+    $query = $wpdb->prepare("SELECT * FROM " . $access_table . " WHERE user_id=%d", $req['user']);
+    return $wpdb->get_results($query, ARRAY_A);
   }
 }

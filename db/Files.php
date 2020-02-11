@@ -60,10 +60,14 @@ class Files extends DbAbstract{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = static::getTable("default");
-    $files_table = static::getTable("files");
+    $default_table = self::getTable("default");
+    $files_table = self::getTable("files");
     $access_table = Access::getTable("access");
-    
+
+    /*
+    var_dump($default_table);
+    throw new Exception(json_encode($default_table), 1);
+    */
     $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
     $file = $wpdb->get_row($queryFile, ARRAY_A);
 
@@ -89,15 +93,15 @@ class Files extends DbAbstract{
         $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
         $query.= implode( ",\n", $values );
         $res = $wpdb->query($query);
-      }
-    }
+      } 
+    } 
 
     if (empty($existDefault) && !empty($result)){
       $wpdb->query("COMMIT");
-      return true;
+      return true; 
     } else {
       $wpdb->query("ROLLBACK");
-      return false;
+      return false; 
     }
   }
 }

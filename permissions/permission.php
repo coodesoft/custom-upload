@@ -1,11 +1,8 @@
 <?php
-
 require_once(__DIR__ . '/../db/Access.php');
 require_once(__DIR__ . '/../db/Clients.php');
 
 function cu_load_files_permision_by_user(){
-    global $wpdb;
-
     $params = array();
     parse_str($_POST['user'], $params);
     $user = $params['user'];
@@ -15,11 +12,6 @@ function cu_load_files_permision_by_user(){
     <?php
     wp_die();
     }
-
-    $queryStr = "SELECT wd_cu_files.*, wd_cu_access.access_id, wd_cu_access.user_id FROM wd_cu_files ";
-    $queryStr.= "LEFT JOIN wd_cu_access ON wd_cu_files.file_id=wd_cu_access.file_id AND wd_cu_access.user_id=".$user;
-
-    $access = $wpdb->get_results($queryStr, OBJECT);
    ?>
     <form action="<?= admin_url('admin-post.php') ?>" method="POST">
       <input type="hidden" name="action" value="assign_permission">
@@ -29,13 +21,15 @@ function cu_load_files_permision_by_user(){
           <th>Archivos</th>
           <th>Permitir Descarga</th>
         </tr>
-        <?php foreach($access as $index => $row){
-            $lastSlash = strrpos($row->file_dir, '/');
-            $filename = substr($row->file_dir, $lastSlash+1);
+        <?php 
+        $access = Access::permissionsFilesList();
+        foreach($access as $index => $row){
+          $lastSlash = strrpos($row->file_dir, '/');
+          $filename = substr($row->file_dir, $lastSlash+1);
         ?>
           <tr>
-              <td><?php echo $filename ?></td>
-              <td><input type="checkbox" name="Permissions[files][]" value="<?php echo $row->file_id?>" <?php echo ($row->user_id != null) ? 'checked': '' ?>></td>
+            <td><?php echo $filename ?></td>
+            <td><input type="checkbox" name="Permissions[files][]" value="<?php echo $row->file_id?>" <?php echo ($row->user_id != null) ? 'checked': '' ?>></td>
           </tr>
         <?php } ?>
       </table>
@@ -89,40 +83,15 @@ function add_permissions($permissions){
   return 0;
 }
 
-function add_all_permisions(){
-  global $wpdb;
-  $query = "UPDATE wp_cu_files SET file_dir = ? WHERE wp_cu_files.file_id = ?";
-
-  //foreach
-  $request[] = $_POST['select-all'];
-
-  if (!empty ($request)){
-    $clients = Clients::getAll();
-
-    if (!empty($clients)){
-      $idFile = $_POST['id-file'];
-      foreach ($clients as $client) {
-        Access::add($idFile);
-      }
-      
-    }  
-  }
-}
-
 function cu_assign_permission(){
   $req = $_POST['Permissions'];
-
-  global $wpdb;
-  $query = $wpdb->prepare("SELECT * FROM wp_cu_access WHERE user_id=%d", $req['user']);
-  $stored = $wpdb->get_results($query, ARRAY_A);
+  $stored = Access::getPermissions($req);
 
   $permissionsArr = prepare_data($req);
   $comparison = compare_data($stored, $permissionsArr);
 
   $deleted = delete_permissions($comparison['toDelete']);
   $added = add_permissions($comparison['toAdd']);
-
-  $addAll = add_all_permisions();
 
   $result =  ($deleted || $added);
   $url ='admin.php?page=global_custom_upload&tab=assignCapabilities&assign_status='.$result;
