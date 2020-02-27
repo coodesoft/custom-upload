@@ -35,7 +35,7 @@ class Access extends DbAbstract{
     return $wpdb->query($query);
   }
 
-  static function permissionsFilesList(){
+  static function permissionsFilesList($user){
     global $wpdb;
     $access_table = self::getTable("access");
     $files_table = Files::getTable("files");
