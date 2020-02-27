@@ -22,7 +22,7 @@ function cu_load_files_permision_by_user(){
           <th>Permitir Descarga</th>
         </tr>
         <?php 
-        $access = Access::permissionsFilesList();
+        $access = Access::permissionsFilesList($user);
         foreach($access as $index => $row){
           $lastSlash = strrpos($row->file_dir, '/');
           $filename = substr($row->file_dir, $lastSlash+1);
