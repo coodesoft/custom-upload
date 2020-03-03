@@ -10,6 +10,7 @@ class Access extends DbAbstract{
   }
   
   static function deleteByIDs($IDs){
+    global $wpdb;
     $access_table = static::getTable("access");
     $values = array();
     
@@ -18,11 +19,13 @@ class Access extends DbAbstract{
   }
 
   static function deleteByUser($id){
+    global $wpdb;
     $access_table = self::getTable("access");
     return $wpdb->delete($access_table, ['user_id' => $id], ['%d']);
   }
 
   static function add($params){
+    global $wpdb;
     $access_table = self::getTable("access");
     $values = array();
 
