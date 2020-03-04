@@ -18,6 +18,20 @@ abstract class DbAbstract {
 
   }
  
+  static function transaction(){
+    global $wpdb;
+    $wpdb->query("START TRANSACTION");
+  }
+
+  static function commit(){
+    global $wpdb;
+    $wpdb->query("COMMIT");
+  }
+
+  static function rollBack(){
+    global $wpdb;
+    $wpdb->query("ROLLBACK");
+  }  
 
 }
 ?>
