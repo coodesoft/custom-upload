@@ -9,6 +9,7 @@ Author URI: http://coodesoft.com.ar
 License: GPL2
 */
 
+require_once 'util/Flags.php';
 require_once 'functions.php';
 
 require_once 'upload/tab.php';

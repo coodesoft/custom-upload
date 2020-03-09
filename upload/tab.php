@@ -49,36 +49,36 @@ function cu_show_files_tree(){
 <?php }
 
 function createUploadForn(){
-  $products = getProducts();
-?>
+    $products = getProducts();
+  ?>
 
-<div id="ucInstructions">
-  <p>Los archivos que suba seran almacenados en la carpeta del cliente seleccionado.</p>
-</div>
+  <div id="ucInstructions">
+    <p>Los archivos que suba seran almacenados en la carpeta del cliente seleccionado.</p>
+  </div>
 
-<?php if (isset($_GET['assign_status'])){ ?>
-  <div id="actionResult">
-    <p><?php echo $result = $_GET['assign_status'] ? 'La carga de archivos se completó exitosamente':'Se produjo un error inesperado durante la carga de archivos'?></p>
-  </div>
-<?php }
-  if (isset($_GET['delete_status'])){ ?>
-  <div id="actionResult">
-    <p><?php echo $result = $_GET['delete_status'] ? 'El archivo se borró exitosamente':'Se produjo un error inesperado durante el borrado del archivos'?></p>
-  </div>
-<?php }
-if (isset($_GET['assign_default_status'])){ ?>
-  <div id="actionResult">
-    <p><?php echo $result = $_GET['assign_default_status'] ? 'El archivo se asignó exitosamente':'Se produjo un error inesperado durante la asignación masiva de archivos'?></p>
-  </div>
-<?php }
+  <?php if (isset($_GET['assign_status'])){ ?>
+    <div id="actionResult">
+      <p><?php echo $result = $_GET['assign_status'] ? 'La carga de archivos se completó exitosamente':'Se produjo un error inesperado durante la carga de archivos'?></p>
+    </div>
+  <?php }
+    if (isset($_GET['delete_status'])){ ?>
+    <div id="actionResult">
+      <p><?php echo $result = $_GET['delete_status'] ? 'El archivo se borró exitosamente':'Se produjo un error inesperado durante el borrado del archivos'?></p>
+    </div>
+  <?php }
+  if (isset($_GET['assign_default_status'])){ ?>
+    <div id="actionResult">
+      <p><?php echo $result = $_GET['assign_default_status'] ? 'El archivo se asignó exitosamente':'Se produjo un error inesperado durante la asignación masiva de archivos'?></p>
+    </div>
+  <?php }
 
-$nombres_productos = array(
-  'belen' => 'Belen',
-  'bakhou' => 'Bakhou',
-  'lara_teens' => 'Lara Teens',
-  'sigry' => 'Sigry',
-);
-?>
+  $nombres_productos = array(
+    'belen' => 'Belen',
+    'bakhou' => 'Bakhou',
+    'lara_teens' => 'Lara Teens',
+    'sigry' => 'Sigry',
+  );
+  ?>
 
 
     <div id="uploadWrapper">
@@ -139,37 +139,60 @@ $nombres_productos = array(
 
 <?php }
 
-
-
 function cu_upload_files(){
   $files = $_FILES['Files'];
   $id = intval($_POST['product']);
   $type = intval($_POST['FileType']);
 
   $product_name = getProductById($id);
+  $basePath = get_cu_upload_folder()."/".$product_name;
 
-  $uploadStatus = true;
+  Files::transaction();
+  $opResult = false;
   for ($i=0; $i < count($files['name']) ; $i++) {
-    $basePath = get_cu_upload_folder()."/".$product_name;
-    $mkDirStatus = wp_mkdir_p($basePath);
 
-    if ($mkDirStatus){
-      $uploadFile = $basePath ."/".basename($files['name'][$i]);
-      if (!move_uploaded_file($files['tmp_name'][$i], $uploadFile))
-        $uploadStatus = false;
-      else{
-        echo $uploadFile;
-        $uploadStatus = Files::add([['file_dir' => $uploadFile, 'file_type' => $type]]) ? 1 : 0;
+      $mkDirStatus = wp_mkdir_p($basePath);
+      if ($mkDirStatus){
+        $uploadFilePath = $basePath ."/".basename($files['name'][$i]);
+        
+        try{
+          
+          $storeInDBStatus = Files::add([['file_dir' => $uploadFilePath, 'file_type' => $type]]) ? 1 : 0;
+          if ($storeInDBStatus){
+            $fileCopyStatus = move_uploaded_file($files['tmp_name'][$i], $uploadFilePath);
+
+            if ( $fileCopyStatus ) {
+              $opResult = Flags::UPLOAD_SUCCESS;
+              Files::commit();
+            } else{
+              $opResult = Flags::COPY_FILE_ERROR;
+              Files::rollBack();
+              break;
+            }
+
+          } else{
+              $opResult = Flags::DB_SAVE_ERROR;
+              Files::rollBack();
+              break;
+          }
+
+        } catch(Exception $e){
+            $opResult = Flags::DB_SAVE_EXCEPTION;
+            Files::rollBack();
+            break;
+        }
+
+      } else{
+        $opResult = Flags::CREATE_DIR_ERROR;
+        break;
       }
-
-    } else
-      $uploadStatus = false;
-
   }
 
-  $url ='admin.php?page=global_custom_upload&tab=uploadFiles&assign_status='.$uploadStatus;
+
+  $url ='admin.php?page=global_custom_upload&tab=uploadFiles&assign_status='.$opResult;
   wp_redirect($url);
   exit;
+
 }
 
 
