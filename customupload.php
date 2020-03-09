@@ -128,8 +128,6 @@ function cu_create_table(){
 
         $sql = "CREATE TABLE $table_name (
             file_id bigint(20) NOT NULL,
-            file_dir varchar(120) NOT NULL,
-            file_type varchar(120) NOT NULL,
             PRIMARY KEY  (file_id)
         ) $charset_collate;";
 

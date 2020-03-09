@@ -139,14 +139,6 @@ out: uploadPanel.css, compress: true
   background: #ccc;
   margin: 5px 0;
 }
-#ucEraseFiles{
-  background-repeat: no-repeat;
-  width: 2em;
-  height: 2em;
-}
-#cuAssignDefault{
-  padding: 5px!important;
-}
 
 .uc-fileinput-wrapper{
   height: 45px;
@@ -232,19 +224,6 @@ out: uploadPanel.css, compress: true
   }
 }
 
-.uc-files {
-  width: 99%;
-  display: flex;
-  .uc-name{
-    width: 70%;
-  }
-  .uc-assign{
-    width: 20%;
-  }
-  .uc-delete{
-    width: 10%;
-  }
-}
 
 #newClientBody{
   margin-top: 20px;
@@ -306,4 +285,46 @@ out: uploadPanel.css, compress: true
 
 .cu-default{
   cursor: default;
+}
+
+#cuAssignDefault{
+  background: url('../img/001-group.svg') no-repeat center;
+  background-size: 100% !important;
+}
+
+#ucEraseFiles{
+  background: url('../img/002-delete.svg') no-repeat center;
+  background-size: 90% !important;
+}
+
+
+
+
+.uc-files {
+  width: 99%;
+  display: flex;
+  align-items: center;
+  .uc-name{
+    width: 70%;
+  }
+  .uc-assign{
+    width: 20%;
+  }
+  .uc-delete{
+    width: 10%;
+  }
+
+  .cu-files-action{
+    width: 40px;
+    border: 1px solid #ccc;
+    height: 40px;
+    background-origin: content-box !important;
+    padding: 2px !important;
+    border-radius: 5px;
+    &:hover{
+      cursor: pointer;
+      border: 1px solid #333;
+    }
+  }
+
 }
