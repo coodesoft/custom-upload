@@ -25,12 +25,12 @@ function cu_show_files_tree(){
     <?php foreach ($files as $key => $fElement) { ?>
         <li class="uc-files">
           <div class="uc-name"><?php echo $fElement; ?></div>
-          
+
           <div class="uc-assign">
-            <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
+            <form enctype="multipart/form-data">
               <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
               <input type="hidden" name="action" value="assign_default">
-              <button id="cuAssignDefault" type="submit">Asignación masiva</button>
+              <div id="cuAssignDefault" class="cu-files-action" type="submit"></div>
             </form>
           </div>
 
@@ -38,7 +38,7 @@ function cu_show_files_tree(){
             <form enctype="multipart/form-data" action="<?= admin_url('admin-post.php') ?>" method="POST">
               <input type="hidden" name="url" value="<?php echo $filesDir. '/' . $fElement ?>">
               <input type="hidden" name="action" value="delete_files">
-              <button id="ucEraseFiles" style="background-image:url('../img/basura.svg')" type="submit"></button>
+              <div id="ucEraseFiles" class="cu-files-action" type="submit"></div>
             </form>
           </div>
         </li>
@@ -154,9 +154,9 @@ function cu_upload_files(){
       $mkDirStatus = wp_mkdir_p($basePath);
       if ($mkDirStatus){
         $uploadFilePath = $basePath ."/".basename($files['name'][$i]);
-        
+
         try{
-          
+
           $storeInDBStatus = Files::add([['file_dir' => $uploadFilePath, 'file_type' => $type]]) ? 1 : 0;
           if ($storeInDBStatus){
             $fileCopyStatus = move_uploaded_file($files['tmp_name'][$i], $uploadFilePath);
