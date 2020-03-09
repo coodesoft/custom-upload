@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../db/Access.php');
 require_once(__DIR__ . '/../db/Clients.php');
 
+add_action( 'wp_ajax_load_permission', 'cu_load_files_permision_by_user' );
 function cu_load_files_permision_by_user(){
     $params = array();
     parse_str($_POST['user'], $params);
@@ -83,6 +84,7 @@ function add_permissions($permissions){
   return 0;
 }
 
+add_action( 'admin_post_assign_permission', 'cu_assign_permission' );
 function cu_assign_permission(){
   $req = $_POST['Permissions'];
   $stored = Access::getPermissions($req);
@@ -99,5 +101,9 @@ function cu_assign_permission(){
   exit;
 }
 
-add_action( 'admin_post_assign_permission', 'cu_assign_permission' );
-add_action( 'wp_ajax_load_permission', 'cu_load_files_permision_by_user' );
+
+add_action( 'wp_ajax_assign_default', 'cu_assign_default' );
+function cu_assign_default(){
+  echo json_encode($_POST);
+  wp_die();
+}
