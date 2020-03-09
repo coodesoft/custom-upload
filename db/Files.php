@@ -5,7 +5,6 @@ class Files extends DbAbstract{
 
   public static function getTableName(){
     return [
-      "default" => "cu_default_files",
       "files" => "cu_files"
     ];
   }
@@ -60,7 +59,6 @@ class Files extends DbAbstract{
 
   static function assignDefault($path){
     global $wpdb;
-    $default_table = self::getTable("default");
     $files_table = self::getTable("files");
     $access_table = Access::getTable("access");
 
@@ -79,10 +77,10 @@ class Files extends DbAbstract{
     if (empty($existDefault)) {
       $wpdb->query("START TRANSACTION");
       $result = $wpdb->insert($default_table, $file);
-      // acá chequeo si inserta el archivo en la tabla cu_default_files. 
+      // acá chequeo si inserta el archivo en la tabla cu_default_files.
       if (!empty($result)) {
         $clientes_table = Clients::getTable("clientes_gs"); // esta es una tabla del plugin GlobalSaxCore
-        $queryClients = "SELECT * FROM " . $clientes_table; 
+        $queryClients = "SELECT * FROM " . $clientes_table;
         $clients = $wpdb->get_results($queryClients, ARRAY_A);
 
         $values = array();
@@ -93,15 +91,15 @@ class Files extends DbAbstract{
         $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
         $query.= implode( ",\n", $values );
         $res = $wpdb->query($query);
-      } 
-    } 
+      }
+    }
 
     if (empty($existDefault) && !empty($result)){
       $wpdb->query("COMMIT");
-      return true; 
+      return true;
     } else {
       $wpdb->query("ROLLBACK");
-      return false; 
+      return false;
     }
   }
 }
