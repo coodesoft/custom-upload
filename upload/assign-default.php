@@ -1,11 +1,11 @@
 <?php
 
-function cu_assign_default(){
+function cu_assign_default_DEFFERED(){
   if (isset($_POST['url'])){
     $url = $_POST['url'];
     $uploadStatus = Files::assignDefault($url);
     //$uploadStatus = new Files();
-  } else 
+  } else
     $uploadStatus = false;
 
   $url ='admin.php?page=global_custom_upload&tab=uploadFiles&assign_default_status='. $uploadStatus ;
