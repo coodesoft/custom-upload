@@ -134,28 +134,28 @@
            }, 1000);
          }
        });
-  } else{
-    var data = {
-      'data': results,
-      'action': 'cu_geocode_sucursales',
-    }
-    $.post(ajaxurl, data, function(data){
-      data = JSON.parse(data);
-      $(progressTarget).append('<p>PROCESO DE GEOLOCALIZACIÓN FINALIZADO</p>')
-
-      if (data['response'] != undefined){
-        $('#actionResult').removeClass('hidden');
-        if (data['response'].length){
-          $('#actionResult').addClass('gbs-error');
-          $(resultTarget).html('Se produjo uno o mas errores al actualizar la base de datos. Contáctese con el administrador.');
-        }else{
-          $('#actionResult').addClass('gbs-success');
-          $(resultTarget).html('Se completó exitosamente el proceso de geolocalización');
-        }
-        $('body').removeClass('cu-progress');
+    } else{
+      var data = {
+        'data': results,
+        'action': 'cu_geocode_sucursales',
       }
-    })
-  }
+      $.post(ajaxurl, data, function(data){
+        data = JSON.parse(data);
+        $(progressTarget).append('<p>PROCESO DE GEOLOCALIZACIÓN FINALIZADO</p>')
+
+        if (data['response'] != undefined){
+          $('#actionResult').removeClass('hidden');
+          if (data['response'].length){
+            $('#actionResult').addClass('gbs-error');
+            $(resultTarget).html('Se produjo uno o mas errores al actualizar la base de datos. Contáctese con el administrador.');
+          }else{
+            $('#actionResult').addClass('gbs-success');
+            $(resultTarget).html('Se completó exitosamente el proceso de geolocalización');
+          }
+          $('body').removeClass('cu-progress');
+        }
+      })
+    }
 
   }
 
@@ -270,41 +270,18 @@
         });
       }
     });
-    
-    document.querySelector("#assign-permission").addEventListener("submit", (e)=>{
-      e.preventDefault(); e.stopPropagation();
-      let data=[];
-      let fileList = document.querySelector(".uc-files") //.dataset.fileId;
-      let files = document.querySelector(".uc-list").getElementsByTagName("li");
-      
-      
+
+    $(root).on('click', '#cuAssignDefault', function(){
+      console.log('cuAssignDefault pressed!');
+      let form = $(this).closest('form');
+      sendContent(form, 'assign_default', undefined, function(data){
+        console.log(data);
+      })
     });
 
-    /*
-    $(root).on('submit', '#assign-permission', function(e){
-      e.preventDefault(); e.stopPropagation();
-      //let url = admin_url('admin-ajax.php');
-      let data=[]; let i=0;
-      let fileList = document.querySelector(".uc-files");
-      let elem = $(fileList).each(function(i){
-        console.log($(this));
-      }); //.attr('data-id-file');
-      
-      $.ajax({
-        url : admin_url('admin-ajax.php'),
-        type: 'post',
-        data: {
-          action : 'assign_ajax_permission',
-          id_file: id
-        },
-        beforeSend: function(){
-          link.html('Cargando ...');
-        },
-        success: function(resultado){
-           $('#post-'+id).find('.entry-content').html(resultado);		
-        }
-      });
-    });*/
+    $(root).on('click', '#ucEraseFiles', function(){
+      console.log('cuEraseFiles pressed!');
+    });
 
     let controller = new UploadController();
     let nav = new Navigator();
