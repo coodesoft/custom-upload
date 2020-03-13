@@ -55,6 +55,7 @@ function createUploadForn(){
   <div id="ucInstructions">
     <p>Los archivos que suba seran almacenados en la carpeta del cliente seleccionado.</p>
   </div>
+  <p id="actionResult" class="result-hidden"></p>
 
   <?php if (isset($_GET['assign_status'])){ ?>
     <div id="actionResult">
