@@ -9,7 +9,7 @@ class Files extends DbAbstract{
     ];
   }
 
-  public static function getTypes(){
+  static function getTypes(){
     return [
       ['label' => 'JPG',  'id' => 0 ],
       ['label' => '1X1',  'id' => 1 ],
@@ -34,6 +34,9 @@ class Files extends DbAbstract{
     return $wpdb->query($query);
   }
 
+  /* TODO refactorizar. Si por alguna razon falla la consulta pero no el borrado
+   * físico se produce una inconsistencia entre la db y la información en disco.
+   */
   static function delete($path){
     global $wpdb;
     $files_table = self::getTable("files");
@@ -57,49 +60,42 @@ class Files extends DbAbstract{
     }
   }
 
-  static function assignDefault($path){
+  static function getByPath($path){
     global $wpdb;
-    $files_table = self::getTable("files");
-    $access_table = Access::getTable("access");
+    $table_name = self::getTable("files");
 
-    /*
-    var_dump($default_table);
-    throw new Exception(json_encode($default_table), 1);
-    */
-    $queryFile = "SELECT * FROM " . $files_table . " WHERE file_dir = '". $path ."'";
-    $file = $wpdb->get_row($queryFile, ARRAY_A);
-
-    $file_id = $file['file_id'];
-    $queryDefault = "SELECT * FROM " . $default_table . " WHERE file_id = '". $file_id ."'";
-    $existDefault = $wpdb->get_row($queryDefault, ARRAY_A);
-
-    // acá chequeo si ya existe el archivo en la tabla cu_default_files. si null, empty() devuelve true
-    if (empty($existDefault)) {
-      $wpdb->query("START TRANSACTION");
-      $result = $wpdb->insert($default_table, $file);
-      // acá chequeo si inserta el archivo en la tabla cu_default_files.
-      if (!empty($result)) {
-        $clientes_table = Clients::getTable("clientes_gs"); // esta es una tabla del plugin GlobalSaxCore
-        $queryClients = "SELECT * FROM " . $clientes_table;
-        $clients = $wpdb->get_results($queryClients, ARRAY_A);
-
-        $values = array();
-        foreach ($clients as $client){
-          $values[] = $wpdb->prepare( "(%d,%d,%d)", 0, $file_id, $client['id'] );
-        }
-
-        $query = "INSERT INTO " .$access_table. " (access_id, file_id, user_id) VALUES ";
-        $query.= implode( ",\n", $values );
-        $res = $wpdb->query($query);
-      }
-    }
-
-    if (empty($existDefault) && !empty($result)){
-      $wpdb->query("COMMIT");
-      return true;
-    } else {
-      $wpdb->query("ROLLBACK");
-      return false;
-    }
+    $query = $wpdb->prepare("SELECT * FROM " . $table_name . " WHERE file_dir=%s", $path);
+    return $wpdb->get_row($query, ARRAY_A);
   }
+
+  static function setAsDefault($path){
+    if ( isset($path) && is_string($path) ){
+        global $wpdb;
+        $table_name = self::getTable("files");
+
+        $result = $wpdb->update( $table_name, ['is_default' => 1], ['file_dir' => $path], ['%d'], ['%s'] );
+
+        if ($result === false)
+          return ['status' => Flags::DB_UPDATE_ERROR, 'id' => null];
+        else{
+          $updated = self::getByPath($path);
+          return ($result > 0) ?  ['status' => Flags::DB_SAVE_SUCCESS, 'file_id' => $updated['file_id']] :
+                                  ['status' => Flags::DB_UPDATE_NO_ROWS, 'file_id' => $updated['file_id']];
+        }
+    } else
+      throw new Exception('Files::setAsDefault - parámetro inválido', 1);
+  }
+
+  static function removeDefaultFlag($IDs){
+    if (!empty($IDs)){
+      global $wpdb;
+      $table_name = self::getTable("files");
+
+      $query = "UPDATE " .$table_name. " SET is_default=0 WHERE file_id IN ($IDs)";
+      return $wpdb->query($query);
+
+    } else
+      throw new Exception('Files::removeDefaultFlag - parámetro inválido', 1);
+  }
+
 }
