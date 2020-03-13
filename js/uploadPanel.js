@@ -274,8 +274,20 @@
     $(root).on('click', '#cuAssignDefault', function(){
       console.log('cuAssignDefault pressed!');
       let form = $(this).closest('form');
+
       sendContent(form, 'assign_default', undefined, function(data){
-        console.log(data);
+        let flags = Flags.getInstance();
+        $('#actionResult').removeClass('result-hidden');
+        $('#actionResult').html(data['msg']);
+        if (flags.DB_SAVE_SUCCESS != data['status']){
+          $('#actionResult').addClass('error-result');
+        }
+
+        setTimeout(function(){
+          $('#actionResult').addClass('result-hidden');
+        }, 2000);
+
+
       })
     });
 
