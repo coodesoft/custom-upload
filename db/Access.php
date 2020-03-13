@@ -10,20 +10,26 @@ class Access extends DbAbstract{
   }
 
   static function deleteByIDs($IDs){
-    global $wpdb;
-    $access_table = static::getTable("access");
-    $values = array();
+    if ($IDs){
+      global $wpdb;
+      $access_table = static::getTable("access");
+      $values = array();
 
-    $query = "DELETE FROM " .$access_table. " WHERE access_id IN ($IDs)";
-    return $wpdb->query($query);
+      $query = "DELETE FROM " .$access_table. " WHERE access_id IN ($IDs)";
+
+      return $wpdb->query($query);
+    } else
+      throw new Exception('Access::deleteByIDs - parámetro inválido', 1);
   }
 
+  //TODO - validar el parámetro
   static function deleteByUser($id){
     global $wpdb;
     $access_table = self::getTable("access");
     return $wpdb->delete($access_table, ['user_id' => $id], ['%d']);
   }
 
+  //TODO - validar el parámetro
   static function add($params){
     global $wpdb;
     $access_table = self::getTable("access");
@@ -54,5 +60,11 @@ class Access extends DbAbstract{
     $access_table = self::getTable("access");
     $query = $wpdb->prepare("SELECT * FROM " . $access_table . " WHERE user_id=%d", $req['user']);
     return $wpdb->get_results($query, ARRAY_A);
+  }
+
+  static function getAll(){
+    global $wpdb;
+    $access_table = self::getTable("access");
+    return $wpdb->get_results('SELECT * FROM '. $access_table, ARRAY_A);
   }
 }
