@@ -37,27 +37,29 @@ class Files extends DbAbstract{
   /* TODO refactorizar. Si por alguna razon falla la consulta pero no el borrado
    * físico se produce una inconsistencia entre la db y la información en disco.
    */
-  static function delete($path){
-    global $wpdb;
-    $files_table = self::getTable("files");
-    $access_table = Access::getTable("access");
-    $default_table = self::getTable("default");
-    $query = "SELECT file_id FROM " . $files_table . " WHERE file_dir = '". $path ."'";
-    $file_id = $wpdb->get_var($query);
+  static function delete($id, $path){
+    
+    if ($id){
+      global $wpdb;
+      $files_table = self::getTable("files");
+      
+      
+      $result = $wpdb->delete( $files_table, ['file_id' => $id], ['%d'] );
+      
+      if ($result === false)
+        return ['status' => Flags::DB_DELETE_ERROR, 'id' => null];
+      elseif ($result > 0){
+        
+        if (unlink($path))
+          return ['status' => Flags::DB_DELETE_SUCCESS, 'id' => $id];
+        else
+           return ['status' => Flags::DB_DELETE_ERROR, 'id' => $id];
+      }
+      else
+        return ['status' => Flags::DB_DELETE_NO_ROWS, 'id' => $id];
 
-    $wpdb->query('START TRANSACTION');
-    $resultUnlink = unlink($path);
-    $result = $wpdb->delete( $files_table, ['file_id' => $file_id], ['%d'] );
-    $resultAccess = $wpdb->delete( $access_table, ['file_id' => $file_id], ['%d'] );
-    $resultDefault = $wpdb->delete( $default_table, ['file_id' => $file_id], ['%d'] );
-
-    if ($result !== false && $resultUnlink !== false && $resultAccess !== false && $resultDefault !== false){
-      $wpdb->query('COMMIT');
-      return true;
-    } else {
-      $wpdb->query('ROLLBACK');
-      return false;
-    }
+    } else
+      throw new Exception('Files::delete - parámetro inválido', 1);
   }
 
   static function getByPath($path){
