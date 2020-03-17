@@ -134,28 +134,28 @@
            }, 1000);
          }
        });
-  } else{
-    var data = {
-      'data': results,
-      'action': 'cu_geocode_sucursales',
-    }
-    $.post(ajaxurl, data, function(data){
-      data = JSON.parse(data);
-      $(progressTarget).append('<p>PROCESO DE GEOLOCALIZACIÓN FINALIZADO</p>')
-
-      if (data['response'] != undefined){
-        $('#actionResult').removeClass('hidden');
-        if (data['response'].length){
-          $('#actionResult').addClass('gbs-error');
-          $(resultTarget).html('Se produjo uno o mas errores al actualizar la base de datos. Contáctese con el administrador.');
-        }else{
-          $('#actionResult').addClass('gbs-success');
-          $(resultTarget).html('Se completó exitosamente el proceso de geolocalización');
-        }
-        $('body').removeClass('cu-progress');
+    } else{
+      var data = {
+        'data': results,
+        'action': 'cu_geocode_sucursales',
       }
-    })
-  }
+      $.post(ajaxurl, data, function(data){
+        data = JSON.parse(data);
+        $(progressTarget).append('<p>PROCESO DE GEOLOCALIZACIÓN FINALIZADO</p>')
+
+        if (data['response'] != undefined){
+          $('#actionResult').removeClass('hidden');
+          if (data['response'].length){
+            $('#actionResult').addClass('gbs-error');
+            $(resultTarget).html('Se produjo uno o mas errores al actualizar la base de datos. Contáctese con el administrador.');
+          }else{
+            $('#actionResult').addClass('gbs-success');
+            $(resultTarget).html('Se completó exitosamente el proceso de geolocalización');
+          }
+          $('body').removeClass('cu-progress');
+        }
+      })
+    }
 
   }
 
@@ -270,41 +270,57 @@
         });
       }
     });
-    
-    document.querySelector("#assign-permission").addEventListener("submit", (e)=>{
-      e.preventDefault(); e.stopPropagation();
-      let data=[];
-      let fileList = document.querySelector(".uc-files") //.dataset.fileId;
-      let files = document.querySelector(".uc-list").getElementsByTagName("li");
-      
-      
+
+    $(root).on('click', '#cuAssignDefault', function(){
+      console.log('cuAssignDefault pressed!');
+      let form = $(this).closest('form');
+
+      sendContent(form, 'assign_default', undefined, function(data){
+        let flags = Flags.getInstance();
+        $('#actionResult').removeClass('result-hidden');
+        $('#actionResult').html(data['msg']);
+        
+        if (flags.DB_SAVE_SUCCESS != data['status']){
+          $('#actionResult').addClass('error-result');
+        }
+
+        setTimeout(function(){
+          $('#actionResult').addClass('result-hidden');
+          $('#actionResult').removeClass('error-result');
+        }, 2000);
+
+
+      })
     });
 
-    /*
-    $(root).on('submit', '#assign-permission', function(e){
-      e.preventDefault(); e.stopPropagation();
-      //let url = admin_url('admin-ajax.php');
-      let data=[]; let i=0;
-      let fileList = document.querySelector(".uc-files");
-      let elem = $(fileList).each(function(i){
-        console.log($(this));
-      }); //.attr('data-id-file');
-      
-      $.ajax({
-        url : admin_url('admin-ajax.php'),
-        type: 'post',
-        data: {
-          action : 'assign_ajax_permission',
-          id_file: id
-        },
-        beforeSend: function(){
-          link.html('Cargando ...');
-        },
-        success: function(resultado){
-           $('#post-'+id).find('.entry-content').html(resultado);		
-        }
-      });
-    });*/
+    $(root).on('click', '#ucEraseFiles', function(){
+
+      let confirmDelete = confirm('Estás por eliminar un archivo. Este proceso no se puede deshacer. Deseas continuar?');
+
+      if (confirmDelete){
+          console.log('cuEraseFiles pressed!');
+          let self = this;
+          let form = $(self).closest('form');
+    
+          sendContent(form, 'delete_files', undefined, function(data){
+            let flags = Flags.getInstance();
+            $('#actionResult').removeClass('result-hidden');
+            $('#actionResult').html(data['msg']);
+            
+    
+            if (flags.DB_DELETE_SUCCESS == data['status']){
+              $(self).closest('li').remove();
+            } else
+              $('#actionResult').addClass('error-result');
+    
+              setTimeout(function(){
+              $('#actionResult').addClass('result-hidden');
+              $('#actionResult').removeClass('error-result');
+          }, 2000);  
+    
+          });  
+      }
+    });
 
     let controller = new UploadController();
     let nav = new Navigator();
