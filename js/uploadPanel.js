@@ -279,12 +279,14 @@
         let flags = Flags.getInstance();
         $('#actionResult').removeClass('result-hidden');
         $('#actionResult').html(data['msg']);
+        
         if (flags.DB_SAVE_SUCCESS != data['status']){
           $('#actionResult').addClass('error-result');
         }
 
         setTimeout(function(){
           $('#actionResult').addClass('result-hidden');
+          $('#actionResult').removeClass('error-result');
         }, 2000);
 
 
@@ -292,7 +294,32 @@
     });
 
     $(root).on('click', '#ucEraseFiles', function(){
-      console.log('cuEraseFiles pressed!');
+
+      let confirmDelete = confirm('Estás por eliminar un archivo. Este proceso no se puede deshacer. Deseas continuar?');
+
+      if (confirmDelete){
+          console.log('cuEraseFiles pressed!');
+          let self = this;
+          let form = $(self).closest('form');
+    
+          sendContent(form, 'delete_files', undefined, function(data){
+            let flags = Flags.getInstance();
+            $('#actionResult').removeClass('result-hidden');
+            $('#actionResult').html(data['msg']);
+            
+    
+            if (flags.DB_DELETE_SUCCESS == data['status']){
+              $(self).closest('li').remove();
+            } else
+              $('#actionResult').addClass('error-result');
+    
+              setTimeout(function(){
+              $('#actionResult').addClass('result-hidden');
+              $('#actionResult').removeClass('error-result');
+          }, 2000);  
+    
+          });  
+      }
     });
 
     let controller = new UploadController();
