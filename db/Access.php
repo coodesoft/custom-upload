@@ -22,6 +22,25 @@ class Access extends DbAbstract{
       throw new Exception('Access::deleteByIDs - parámetro inválido', 1);
   }
 
+  static function deleteByFile($id){
+    
+    if ($id){
+      global $wpdb;
+      $access_table = static::getTable('access');
+      $result = $wpdb->delete( $access_table, ['file_id' => $id], ['%d'] );
+            
+      if ($result === false)
+        return ['status' => Flags::DB_DELETE_ERROR, 'id' => null];
+      elseif ($result > 0)
+        return ['status' => Flags::DB_DELETE_SUCCESS, 'id' => $id];
+      else
+        return ['status' => Flags::DB_DELETE_NO_ROWS, 'id' => $id];
+
+    } else
+      throw new Exception('Access::delteByFile - parámetro inválido', 1);
+  }
+
+
   //TODO - validar el parámetro
   static function deleteByUser($id){
     global $wpdb;
